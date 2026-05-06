@@ -57,8 +57,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .toast.info{ border-color: var(--blue);  color: var(--blue);  }
 @keyframes tIn  { from{opacity:0;transform:translateY(-6px)} to{opacity:1;transform:translateY(0)} }
 @keyframes tOut { to{opacity:0} }
-
-/* ── Username overlay ── */
 .uname-overlay { position:fixed;inset:0;z-index:2000;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;transition:opacity .35s,visibility .35s; }
 .uname-overlay.gone { opacity:0;visibility:hidden;pointer-events:none; }
 .uname-logo { font-family:'Outfit',sans-serif;font-size:50px;font-weight:900;letter-spacing:-2px;background:linear-gradient(135deg,#ff6b2b,#ff9f43,#e55039);-webkit-background-clip:text;-webkit-text-fill-color:transparent; }
@@ -69,14 +67,10 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .uname-box input::placeholder { color:var(--muted); }
 .btn-primary { padding:13px;background:linear-gradient(135deg,var(--accent),#e55039);color:#fff;border:none;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s;touch-action:manipulation; }
 .btn-primary:active { transform:scale(.97); }
-
-/* ── App shell ── */
 .app    { display:flex;flex-direction:column;height:100vh;height:-webkit-fill-available;position:relative;z-index:1;isolation:isolate; }
 .panels { flex:1;overflow:hidden;position:relative;min-height:0; }
 .panel  { position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s;display:flex;flex-direction:column; }
 .panel.on { opacity:1;visibility:visible; }
-
-/* ── Bottom nav ── */
 .bottomnav { height:var(--bottomnav-h);display:flex;align-items:center;justify-content:space-around;background:#0d0d0d;border-top:1px solid var(--border);flex-shrink:0;z-index:100;will-change:transform; }
 .nav-btn { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;background:none;border:none;color:var(--muted);font-family:inherit;cursor:pointer;padding:6px;touch-action:manipulation;transition:color .15s;position:relative; }
 .nav-btn i    { font-size:22px;margin-bottom:2px; }
@@ -88,8 +82,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 @keyframes badgePop { from{transform:scale(0)} to{transform:scale(1)} }
 @keyframes iconSpin { 0%{transform:rotate(0deg) scale(1)} 40%{transform:rotate(200deg) scale(1.15)} 100%{transform:rotate(360deg) scale(1)} }
 .nav-btn.refreshing i { animation:iconSpin .5s cubic-bezier(.4,0,.2,1) forwards;color:var(--accent); }
-
-/* ── Subreddit chips ── */
 .feed-top-bar { flex-shrink:0;padding:7px 10px;background:var(--bg2);border-bottom:1px solid var(--border); }
 .subs-row { display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;scroll-behavior:smooth; }
 .subs-row::-webkit-scrollbar { display:none; }
@@ -97,8 +89,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .sub-chip.on { background:var(--accent-dim);border-color:var(--accent);color:var(--accent); }
 .sub-chip .rm { font-size:10px;opacity:.5; }
 .add-sub-btn { flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--card);border:1.5px dashed var(--border);color:var(--accent);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;font-size:13px;transition:all .2s; }
-
-/* ── Search overlay ── */
 .search-overlay { position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transform:translateZ(0);transition:opacity .25s,visibility .25s; }
 .search-overlay.show { opacity:1;visibility:visible; }
 .search-header { flex-shrink:0;padding:10px 12px;background:#0d0d0d;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:8px; }
@@ -112,16 +102,30 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .search-clear-btn.vis { display:block; }
 .search-scroll { flex:1;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior-y:contain;display:flex;flex-direction:column;will-change:scroll-position; }
 .search-scroll::-webkit-scrollbar { display:none; }
-
-/* ── Feed scroll + meme card ── */
 .feed-scroll { flex:1;overflow-y:auto;scroll-snap-type:y mandatory;overscroll-behavior-y:contain;display:flex;flex-direction:column;will-change:scroll-position; }
 .feed-scroll::-webkit-scrollbar { display:none; }
 .feed-refresh-flash { position:absolute;inset:0;z-index:10;background:rgba(255,107,43,.07);pointer-events:none;animation:flashFade .4s ease forwards;will-change:opacity; }
 @keyframes flashFade { from{opacity:1} to{opacity:0} }
 .meme-card { flex-shrink:0;height:100%;scroll-snap-align:start;scroll-snap-stop:always;display:flex;flex-direction:column;background:var(--bg);position:relative;contain:layout style paint; }
+/* ── Media wrap — handles both img and gif ── */
 .img-wrap { flex:1;position:relative;overflow:hidden;background:#0d0d0d;display:flex;align-items:center;justify-content:center;min-height:0;contain:strict; }
-.img-wrap img { position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .35s ease; }
-.img-wrap img.visible { opacity:1; }
+.img-wrap img,
+.img-wrap video {
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;opacity:0;
+  transition:opacity .35s ease;
+}
+.img-wrap img.visible,
+.img-wrap video.visible { opacity:1; }
+/* GIF badge */
+.gif-badge {
+  position:absolute;bottom:8px;left:8px;z-index:5;
+  background:rgba(0,0,0,.75);color:#fff;
+  font-size:10px;font-weight:800;letter-spacing:1px;
+  padding:3px 7px;border-radius:6px;
+  border:1px solid rgba(255,255,255,.2);
+  pointer-events:none;
+}
 .img-loader { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;transition:opacity .25s; }
 .img-loader.hide { opacity:0;pointer-events:none; }
 .img-err { position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;text-align:center;padding:20px; }
@@ -146,8 +150,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .spin { width:28px;height:28px;border:3px solid #282828;border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite;will-change:transform; }
 .spin.lg { width:40px;height:40px;border-width:4px; }
 @keyframes spin { to{transform:rotate(360deg)} }
-
-/* ── Add-sub modal ── */
 .modal-bg { position:fixed;inset:0;z-index:800;background:rgba(0,0,0,.6);display:flex;align-items:flex-end;justify-content:center;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s; }
 .modal-bg.on { opacity:1;visibility:visible; }
 .modal { background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;width:100%;padding:18px 16px;transform:translateY(20px);transition:transform .3s cubic-bezier(.32,.72,0,1);padding-bottom:max(32px,env(safe-area-inset-bottom)); }
@@ -164,16 +166,11 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .pop-chips { display:flex;flex-wrap:wrap;gap:6px; }
 .pop-chip { padding:5px 11px;border-radius:14px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;touch-action:manipulation;transition:all .15s; }
 .pop-chip:active { border-color:var(--accent);color:var(--accent);background:var(--accent-dim); }
-
-/* ══════════════════════════════════════════
-   CHAT — full redesign with feed-size cards
-══════════════════════════════════════════ */
+/* CHAT */
 .chat-header { flex-shrink:0;background:#0d0d0d;border-bottom:1px solid var(--border);padding:8px 12px; }
 .chat-header-top { display:flex;align-items:center;justify-content:space-between; }
 .chat-header-title { font-size:14px;font-weight:700;display:flex;align-items:center;gap:6px; }
 .chat-header-title i { color:var(--accent);font-size:12px; }
-
-/* Online strip */
 .online-strip { display:flex;align-items:center;gap:6px;overflow-x:auto;padding:6px 0 2px;-webkit-overflow-scrolling:touch; }
 .online-strip::-webkit-scrollbar { display:none; }
 .online-count { font-size:11px;color:var(--green);font-weight:600;display:flex;align-items:center;gap:4px;flex-shrink:0; }
@@ -183,115 +180,44 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .online-avatar { flex-shrink:0;width:26px;height:26px;border-radius:50%;background:var(--card);border:1.5px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--accent);position:relative; }
 .online-avatar::after { content:'';position:absolute;bottom:0;right:0;width:7px;height:7px;border-radius:50%;background:var(--green);border:1.5px solid #0d0d0d; }
 .online-name { font-size:9px;color:var(--muted);margin-top:2px;text-align:center;max-width:36px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
-
-/* New message banner */
 .new-msg-banner { position:absolute;bottom:70px;left:50%;transform:translateX(-50%);z-index:50;background:var(--accent);color:#fff;padding:7px 16px;border-radius:20px;font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px;box-shadow:0 4px 20px rgba(255,107,43,.5);cursor:pointer;touch-action:manipulation;animation:slideUp .3s cubic-bezier(.34,1.56,.64,1);white-space:nowrap; }
 .new-msg-banner.hidden { display:none; }
 @keyframes slideUp { from{opacity:0;transform:translateX(-50%) translateY(10px)} to{opacity:1;transform:translateX(-50%) translateY(0)} }
-
-/* Chat scroll */
 .chat-msgs { flex:1;overflow-y:auto;overscroll-behavior-y:contain;padding:10px 0;display:flex;flex-direction:column;gap:12px;min-height:0;will-change:scroll-position;position:relative; }
 .chat-msgs::-webkit-scrollbar { width:3px; }
 .chat-msgs::-webkit-scrollbar-thumb { background:var(--border);border-radius:3px; }
 .chat-empty { flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px; }
 .chat-empty i { font-size:36px;opacity:.2; }
-
-/* Message wrapper */
 .msg { display:flex;flex-direction:column;animation:mup .2s ease;width:100%; }
 @keyframes mup { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
 .msg.in  { align-items:flex-start; }
 .msg.out { align-items:flex-end; }
-
-/* Text bubble */
 .msg-bubble-wrap { max-width:82%;display:flex;flex-direction:column; }
 .msg-bubble { padding:8px 12px;border-radius:14px;font-size:13px;line-height:1.5; }
 .msg.in  .msg-bubble { background:var(--card);border-bottom-left-radius:4px; }
 .msg.out .msg-bubble { background:var(--accent);color:#fff;border-bottom-right-radius:4px; }
-
-/* Who label */
 .msg-who { font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;margin-bottom:3px;padding:0 12px; }
 .msg.in  .msg-who { color:var(--accent); }
 .msg.out .msg-who { color:var(--muted);text-align:right; }
-
-/* Timestamp */
 .msg-ts { font-size:9px;opacity:.35;margin-top:3px;padding:0 12px; }
 .msg.out .msg-ts { text-align:right; }
-
-/* ── CHAT MEME CARD — full width, feed-identical layout ── */
-.msg-meme-outer {
-  width: 100%;
-  padding: 0 10px;
-  display: flex;
-  flex-direction: column;
-}
-.msg.out .msg-meme-outer { align-items: flex-end; }
-.msg.in  .msg-meme-outer { align-items: flex-start; }
-
-.msg-meme-card {
-  width: 100%;                      /* full message column width */
-  background: var(--bg2);
-  border-radius: var(--radius);
-  overflow: hidden;
-  border: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  /* subtle glow matching feed accent */
-  box-shadow: 0 2px 16px rgba(0,0,0,.4);
-}
-
-/* Top info bar — identical to .meme-info in feed */
-.msg-meme-info {
-  padding: 9px 13px 10px;
-  background: linear-gradient(to bottom,rgba(10,10,10,1),rgba(10,10,10,.92));
-  border-bottom: 1px solid var(--border);
-}
-.msg-meme-meta {
-  font-size: 10px; color: var(--muted);
-  display: flex; align-items: center; gap: 5px; flex-wrap: wrap;
-  margin-bottom: 4px;
-}
-.msg-meme-meta .dot { opacity: .3; }
-.msg-meme-title {
-  font-size: 13px; font-weight: 600; line-height: 1.4;
-  display: -webkit-box; -webkit-line-clamp: 2;
-  -webkit-box-orient: vertical; overflow: hidden;
-}
-
-/* Image — tall like the feed, uses aspect-ratio so it's responsive */
-.msg-meme-img-wrap {
-  width: 100%;
-  aspect-ratio: 1 / 1;             /* square default; overridden by JS if landscape */
-  background: #0d0d0d;
-  overflow: hidden;
-  position: relative;
-  display: flex; align-items: center; justify-content: center;
-}
-.msg-meme-img-wrap img {
-  width: 100%; height: 100%;
-  object-fit: contain;             /* same as feed — shows full image, no crop */
-  display: block;
-}
-
-/* Bottom action bar — identical to .meme-actions in feed */
-.msg-meme-actions {
-  padding: 9px 13px 11px;
-  background: linear-gradient(to top,rgba(10,10,10,1),rgba(10,10,10,.92));
-  border-top: 1px solid var(--border);
-  display: flex; gap: 10px; align-items: center;
-}
-.msg-meme-stat {
-  display: flex; align-items: center; gap: 4px;
-  font-size: 11px; color: var(--muted); font-weight: 600;
-}
-.msg-meme-stat i { font-size: 10px; }
-.msg-meme-sub-badge {
-  margin-left: auto;
-  font-size: 10px; color: var(--accent); font-weight: 700;
-  background: var(--accent-dim); border: 1px solid var(--accent);
-  padding: 2px 8px; border-radius: 10px;
-}
-
-/* Chat input bar */
+/* Chat meme card */
+.msg-meme-outer { width:100%;padding:0 10px;display:flex;flex-direction:column; }
+.msg.out .msg-meme-outer { align-items:flex-end; }
+.msg.in  .msg-meme-outer { align-items:flex-start; }
+.msg-meme-card { width:100%;background:var(--bg2);border-radius:var(--radius);overflow:hidden;border:1px solid var(--border);display:flex;flex-direction:column;box-shadow:0 2px 16px rgba(0,0,0,.4); }
+.msg-meme-info { padding:9px 13px 10px;background:linear-gradient(to bottom,rgba(10,10,10,1),rgba(10,10,10,.92));border-bottom:1px solid var(--border); }
+.msg-meme-meta { font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px; }
+.msg-meme-meta .dot { opacity:.3; }
+.msg-meme-title { font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden; }
+/* Chat meme media wrap — supports gif too */
+.msg-meme-img-wrap { width:100%;aspect-ratio:1/1;background:#0d0d0d;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center; }
+.msg-meme-img-wrap img,
+.msg-meme-img-wrap video { width:100%;height:100%;object-fit:contain;display:block; }
+.msg-meme-actions { padding:9px 13px 11px;background:linear-gradient(to top,rgba(10,10,10,1),rgba(10,10,10,.92));border-top:1px solid var(--border);display:flex;gap:10px;align-items:center; }
+.msg-meme-stat { display:flex;align-items:center;gap:4px;font-size:11px;color:var(--muted);font-weight:600; }
+.msg-meme-stat i { font-size:10px; }
+.msg-meme-sub-badge { margin-left:auto;font-size:10px;color:var(--accent);font-weight:700;background:var(--accent-dim);border:1px solid var(--accent);padding:2px 8px;border-radius:10px; }
 .chat-bar { display:flex;align-items:center;gap:7px;padding:7px 10px;background:var(--bg);border-top:1px solid var(--border);flex-shrink:0;padding-bottom:max(7px,env(safe-area-inset-bottom)); }
 .chat-bar input { flex:1;padding:10px 14px;background:var(--card);border:1px solid var(--border);border-radius:22px;color:var(--fg);font-family:inherit;font-size:16px;outline:none;transition:border-color .2s;-webkit-user-select:text;user-select:text; }
 .chat-bar input:focus { border-color:var(--accent); }
@@ -299,8 +225,7 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .send-btn { width:40px;height:40px;border-radius:50%;background:var(--accent);border:none;color:#fff;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0;touch-action:manipulation;transition:transform .1s; }
 .send-btn:active { transform:scale(.9); }
 .send-btn i { font-size:15px; }
-
-/* ── Comments sheet ── */
+/* Comments sheet */
 .sheet-bg { position:fixed;inset:0;z-index:900;background:rgba(0,0,0,.6);opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s; }
 .sheet-bg.on { opacity:1;visibility:visible; }
 .sheet { position:fixed;bottom:0;left:0;right:0;z-index:901;background:var(--bg2);border-radius:var(--radius) var(--radius) 0 0;height:80vh;display:flex;flex-direction:column;will-change:transform;transform:translateY(100%);transition:transform .32s cubic-bezier(.32,.72,0,1);padding-bottom:env(safe-area-inset-bottom); }
@@ -320,6 +245,32 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 .cmt-score i { font-size:9px; }
 .cmt-body   { font-size:13px;line-height:1.55;word-break:break-word;color:var(--fg); }
 .cmt-time   { font-size:10px;color:var(--muted);margin-top:4px; }
+/* GIF inside comments */
+.cmt-gif-wrap {
+  margin-top: 8px;
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  background: #0d0d0d;
+  position: relative;
+  max-height: 280px;
+  display: flex; align-items: center; justify-content: center;
+}
+.cmt-gif-wrap img,
+.cmt-gif-wrap video {
+  width: 100%;
+  max-height: 280px;
+  object-fit: contain;
+  display: block;
+  border-radius: var(--radius-sm);
+}
+.cmt-gif-badge {
+  position: absolute; bottom: 5px; left: 5px;
+  background: rgba(0,0,0,.75); color: #fff;
+  font-size: 9px; font-weight: 800; letter-spacing: 1px;
+  padding: 2px 6px; border-radius: 5px;
+  border: 1px solid rgba(255,255,255,.2);
+  pointer-events: none;
+}
 .sheet-empty { text-align:center;color:var(--muted);font-size:13px;padding:28px 16px;display:flex;flex-direction:column;align-items:center;gap:8px; }
 .sheet-empty i { font-size:32px;opacity:.2; }
 .sheet-loading { display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:28px;color:var(--muted);font-size:13px; }
@@ -331,8 +282,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
   <div class="orb orb-2"></div>
 </div>
 <div id="toasts" aria-live="polite"></div>
-
-<!-- Username overlay -->
 <div class="uname-overlay" id="uOverlay">
   <div class="uname-logo">MemeVault</div>
   <p class="uname-sub">Your infinite meme dimension</p>
@@ -342,8 +291,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
     <button class="btn-primary" id="uGo">Enter the Vault →</button>
   </div>
 </div>
-
-<!-- Add subreddit modal -->
 <div class="modal-bg" id="addSubModal">
   <div class="modal">
     <div class="modal-head">
@@ -372,8 +319,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
     </div>
   </div>
 </div>
-
-<!-- Comments sheet -->
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-label="Comments">
   <div class="sheet-pill"></div>
@@ -388,8 +333,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
     <div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>
   </div>
 </div>
-
-<!-- Search overlay -->
 <div class="search-overlay" id="searchOverlay">
   <div class="search-header">
     <button class="search-back" id="searchBack"><i class="fa-solid fa-arrow-left"></i></button>
@@ -402,12 +345,8 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
   </div>
   <div class="search-scroll" id="searchScroll"></div>
 </div>
-
-<!-- App -->
 <div class="app">
   <div class="panels">
-
-    <!-- FEED -->
     <section class="panel on" id="p-feed">
       <div class="feed-top-bar">
         <div class="subs-row" id="subsRow">
@@ -421,8 +360,6 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
         </div>
       </div>
     </section>
-
-    <!-- CHAT -->
     <section class="panel" id="p-chat">
       <div class="chat-header">
         <div class="chat-header-top">
@@ -451,10 +388,7 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
         <button class="send-btn" id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
       </div>
     </section>
-
   </div>
-
-  <!-- Bottom nav -->
   <nav class="bottomnav">
     <button class="nav-btn on" id="feedNavBtn" data-tab="feed">
       <i class="fa-solid fa-fire-flame-curved"></i>
@@ -473,70 +407,52 @@ overflow: hidden; will-change: transform; overscroll-behavior: none;
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, onValue, set, remove,
+import { getDatabase, ref, push, onChildAdded, onValue, set,
          query, limitToLast, serverTimestamp, onDisconnect }
   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-/* ── Firebase ── */
 const fbApp = initializeApp({
-  apiKey:            "AIzaSyCuyvT-xKIGMJyi3LTkoF5VLT1bRmcU0Rc",
-  authDomain:        "memme-e5686.firebaseapp.com",
-  databaseURL:       "https://memme-e5686-default-rtdb.firebaseio.com",
-  projectId:         "memme-e5686",
-  storageBucket:     "memme-e5686.firebasestorage.app",
-  messagingSenderId: "444149549078",
-  appId:             "1:444149549078:web:50677ecdce29852ab94d37"
+  apiKey:"AIzaSyCuyvT-xKIGMJyi3LTkoF5VLT1bRmcU0Rc",
+  authDomain:"memme-e5686.firebaseapp.com",
+  databaseURL:"https://memme-e5686-default-rtdb.firebaseio.com",
+  projectId:"memme-e5686",
+  storageBucket:"memme-e5686.firebasestorage.app",
+  messagingSenderId:"444149549078",
+  appId:"1:444149549078:web:50677ecdce29852ab94d37"
 });
 const db      = getDatabase(fbApp);
-const chatRef = ref(db, "memeVault_chat");
+const chatRef = ref(db,"memeVault_chat");
 
 /* ── State ── */
-let username   = localStorage.getItem("mv_user") || "";
-let seenIds    = new Set(JSON.parse(localStorage.getItem("mv_seen6") || "[]"));
-let saved      = new Set(JSON.parse(localStorage.getItem("mv_saved")  || "[]"));
-let subreddits = JSON.parse(localStorage.getItem("mv_subs") || "null")
-                 || ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
-const feedCursors = {};
-let feedRR=0, feedFetching=false, currentSub="all";
-let searchQuery="", searchAfter="", searchFetching=false, searchExhausted=false;
-let unreadCount=0, chatOpen=false, firstLoad=true;
-let onlineUsers={}, presenceRef=null;
+let username   = localStorage.getItem("mv_user")||"";
+let seenIds    = new Set(JSON.parse(localStorage.getItem("mv_seen6")||"[]"));
+let saved      = new Set(JSON.parse(localStorage.getItem("mv_saved")||"[]"));
+let subreddits = JSON.parse(localStorage.getItem("mv_subs")||"null")||["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
+const feedCursors={};
+let feedRR=0,feedFetching=false,currentSub="all";
+let searchQuery="",searchAfter="",searchFetching=false,searchExhausted=false;
+let unreadCount=0,chatOpen=false,firstLoad=true;
+let onlineUsers={},presenceRef=null;
 
-/* ── DOM refs ── */
-const $uOverlay    = document.getElementById("uOverlay");
-const $uInput      = document.getElementById("uInput");
-const $uGo         = document.getElementById("uGo");
-const $feedScroll  = document.getElementById("feedScroll");
-const $feedInit    = document.getElementById("feedInitState");
-const $subsRow     = document.getElementById("subsRow");
-const $openAddSub  = document.getElementById("openAddSub");
-const $addModal    = document.getElementById("addSubModal");
-const $closeModal  = document.getElementById("closeModal");
-const $subInput    = document.getElementById("subInput");
-const $subAddBtn   = document.getElementById("subAddBtn");
-const $sheetBg     = document.getElementById("sheetBg");
-const $sheet       = document.getElementById("sheet");
-const $sheetBody   = document.getElementById("sheetBody");
-const $sheetCount  = document.getElementById("sheetCount");
-const $sheetX      = document.getElementById("sheetX");
-const $chatMsgs    = document.getElementById("chatMsgs");
-const $chatEmpty   = document.getElementById("chatEmpty");
-const $chatIn      = document.getElementById("chatIn");
-const $chatSend    = document.getElementById("chatSend");
-const $toasts      = document.getElementById("toasts");
-const $searchOverlay = document.getElementById("searchOverlay");
-const $searchInput   = document.getElementById("searchInput");
-const $searchScroll  = document.getElementById("searchScroll");
-const $searchBack    = document.getElementById("searchBack");
-const $searchClear   = document.getElementById("searchClearBtn");
-const $openSearch    = document.getElementById("openSearchBtn");
-const $feedNavBtn    = document.getElementById("feedNavBtn");
-const $chatNavBtn    = document.getElementById("chatNavBtn");
-const $pfeed         = document.getElementById("p-feed");
-const $onlineStrip   = document.getElementById("onlineStrip");
-const $onlineCount   = document.getElementById("onlineCount");
-const $newMsgBanner  = document.getElementById("newMsgBanner");
-const $newMsgText    = document.getElementById("newMsgText");
+/* ── DOM ── */
+const $=id=>document.getElementById(id);
+const $uOverlay=$("uOverlay"),$uInput=$("uInput"),$uGo=$("uGo");
+const $feedScroll=$("feedScroll"),$feedInit=$("feedInitState");
+const $subsRow=$("subsRow"),$openAddSub=$("openAddSub");
+const $addModal=$("addSubModal"),$closeModal=$("closeModal");
+const $subInput=$("subInput"),$subAddBtn=$("subAddBtn");
+const $sheetBg=$("sheetBg"),$sheet=$("sheet");
+const $sheetBody=$("sheetBody"),$sheetCount=$("sheetCount"),$sheetX=$("sheetX");
+const $chatMsgs=$("chatMsgs"),$chatEmpty=$("chatEmpty");
+const $chatIn=$("chatIn"),$chatSend=$("chatSend");
+const $toasts=$("toasts");
+const $searchOverlay=$("searchOverlay"),$searchInput=$("searchInput");
+const $searchScroll=$("searchScroll"),$searchBack=$("searchBack");
+const $searchClear=$("searchClearBtn"),$openSearch=$("openSearchBtn");
+const $feedNavBtn=$("feedNavBtn"),$chatNavBtn=$("chatNavBtn");
+const $pfeed=$("p-feed");
+const $onlineStrip=$("onlineStrip"),$onlineCount=$("onlineCount");
+const $newMsgBanner=$("newMsgBanner"),$newMsgText=$("newMsgText");
 
 /* ── Helpers ── */
 function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
@@ -544,11 +460,133 @@ function throttle(fn,ms){let l=0;return(...a)=>{const n=Date.now();if(n-l>=ms){l
 function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
 function toast(msg,type=""){const el=document.createElement("div");el.className="toast "+type;el.textContent=msg;$toasts.appendChild(el);setTimeout(()=>el.remove(),2500);}
 function saveSeen(){const a=[...seenIds];if(a.length>2000)seenIds=new Set(a.slice(-2000));localStorage.setItem("mv_seen6",JSON.stringify([...seenIds]));}
-function saveSubs() {localStorage.setItem("mv_subs",JSON.stringify(subreddits));}
+function saveSubs(){localStorage.setItem("mv_subs",JSON.stringify(subreddits));}
 function saveSaved(){localStorage.setItem("mv_saved",JSON.stringify([...saved]));}
 function fmtN(n){return n>=1000?(n/1000).toFixed(1)+"k":String(n||0);}
-function fmtT(ts){return ts?new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""; }
+function fmtT(ts){return ts?new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";}
 function relTime(utc){if(!utc)return"";const s=Math.floor(Date.now()/1000-utc);if(s<60)return"just now";if(s<3600)return Math.floor(s/60)+"m ago";if(s<86400)return Math.floor(s/3600)+"h ago";return Math.floor(s/86400)+"d ago";}
+
+/* ══════════════════════════════════════════════════════
+   GIF / MEDIA RESOLUTION — the core fix
+══════════════════════════════════════════════════════ */
+
+/* Detect if URL is a GIF */
+function isGif(url=""){
+  return /\.gif($|\?)/i.test(url)||
+    url.includes("i.redd.it")&&url.includes(".gif")||
+    url.includes("tenor.com")||
+    url.includes("giphy.com")||
+    url.includes("gfycat.com")||
+    url.includes("redgifs.com");
+}
+
+/* Detect if URL is an MP4 preview (Reddit converts GIFs to mp4) */
+function isMp4(url=""){
+  return /\.mp4($|\?)/i.test(url)||url.includes("v.redd.it");
+}
+
+/*
+ * resolveMedia — returns { url, type, isGif }
+ *
+ * Reddit stores GIFs in multiple ways:
+ * 1. preview.images[0].variants.gif.source.url  ← actual GIF
+ * 2. preview.images[0].variants.mp4.source.url  ← mp4 version (better)
+ * 3. preview.reddit_video_preview.fallback_url  ← mp4 for v.redd.it
+ * 4. url_overridden_by_dest                     ← direct link
+ */
+function resolveMedia(d){
+  const imgs   = d.preview?.images?.[0];
+  const gifVar = imgs?.variants?.gif?.source?.url;
+  const mp4Var = imgs?.variants?.mp4?.source?.url;
+  const prevUrl= imgs?.source?.url;
+  const direct = d.url_overridden_by_dest||d.url||"";
+  const vidPrev= d.preview?.reddit_video_preview?.fallback_url;
+
+  /* Priority order: mp4 preview > gif preview > direct gif > static preview > direct */
+
+  /* 1. MP4 variant of GIF (best — smooth, small file) */
+  if(mp4Var&&mp4Var.startsWith("http")){
+    return{url:mp4Var.replace(/&amp;/g,"&"),type:"video",isGif:true};
+  }
+  /* 2. Reddit video preview mp4 */
+  if(vidPrev&&vidPrev.startsWith("http")&&!d.is_video){
+    return{url:vidPrev.replace(/&amp;/g,"&"),type:"video",isGif:true};
+  }
+  /* 3. Direct GIF URL */
+  if(isGif(direct)){
+    return{url:direct,type:"img",isGif:true};
+  }
+  /* 4. GIF variant (fallback) */
+  if(gifVar&&gifVar.startsWith("http")){
+    return{url:gifVar.replace(/&amp;/g,"&"),type:"img",isGif:true};
+  }
+  /* 5. Direct mp4 */
+  if(isMp4(direct)){
+    return{url:direct.replace(/&amp;/g,"&"),type:"video",isGif:false};
+  }
+  /* 6. Static image preview */
+  if(prevUrl&&prevUrl.startsWith("http")){
+    return{url:prevUrl.replace(/&amp;/g,"&"),type:"img",isGif:false};
+  }
+  /* 7. Direct image URL */
+  if(/\.(jpg|jpeg|png|gif|webp)/i.test(direct)){
+    const isG=/\.gif/i.test(direct);
+    return{url:direct,type:"img",isGif:isG};
+  }
+  return null;
+}
+
+function isValid(d){
+  return d&&!d.over_18&&!d.stickied&&!!resolveMedia(d);
+}
+
+function toMeme(d){
+  const media=resolveMedia(d);
+  return{
+    id:d.id,title:d.title||"Untitled",
+    mediaUrl:media?.url||"",
+    mediaType:media?.type||"img",
+    isGif:media?.isGif||false,
+    author:d.author||"[deleted]",
+    sub:d.subreddit||"",
+    score:d.score||0,
+    numCmt:d.num_comments||0,
+    permalink:d.permalink||""
+  };
+}
+
+/* ── Resolve media inside comment bodies ── */
+function extractCommentMedia(body=""){
+  /* Reddit comments can have inline gif links like:
+     https://i.redd.it/xxx.gif
+     https://i.imgur.com/xxx.gif
+     https://tenor.com/...
+  */
+  const urlReg=/https?:\/\/[^\s\)]+\.(gif|gifv|mp4)/gi;
+  const match=body.match(urlReg);
+  if(!match) return null;
+  const url=match[0];
+  if(isMp4(url)) return{url,type:"video"};
+  return{url,type:"img"};
+}
+
+/* ── Proxy waterfall ── */
+const PROXIES=[
+  u=>u,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+];
+let proxyOK=0;
+async function redditFetch(url){
+  for(let i=proxyOK;i<PROXIES.length;i++){
+    try{
+      const res=await fetch(PROXIES[i](url),{headers:{Accept:"application/json"},signal:AbortSignal.timeout(9000)});
+      if(!res.ok)throw new Error("HTTP "+res.status);
+      const json=await res.json();proxyOK=i;return json;
+    }catch(e){console.warn(`[proxy ${i}] ${e.message}`);if(i===PROXIES.length-1)throw e;}
+  }
+}
 
 /* ── Presence ── */
 function initPresence(){
@@ -577,7 +615,7 @@ function renderOnlineUsers(){
   $onlineStrip.appendChild(frag);
 }
 
-/* ── New-message indicator ── */
+/* ── New message indicator ── */
 function isAtBottom(){return $chatMsgs.scrollHeight-$chatMsgs.scrollTop-$chatMsgs.clientHeight<80;}
 $chatMsgs.addEventListener("scroll",throttle(()=>{if(isAtBottom()){hideBanner();unreadCount=0;clearNavBadge();}},100));
 function showBanner(n){$newMsgText.textContent=n===1?"1 new message":`${n} new messages`;$newMsgBanner.classList.remove("hidden");}
@@ -585,19 +623,6 @@ function hideBanner(){$newMsgBanner.classList.add("hidden");}
 $newMsgBanner.addEventListener("click",()=>{$chatMsgs.scrollTo({top:$chatMsgs.scrollHeight,behavior:"smooth"});hideBanner();unreadCount=0;clearNavBadge();});
 function setNavBadge(n){let b=$chatNavBtn.querySelector(".nav-badge");if(!b){b=document.createElement("span");b.className="nav-badge";$chatNavBtn.appendChild(b);}b.textContent=n>99?"99+":String(n);}
 function clearNavBadge(){const b=$chatNavBtn.querySelector(".nav-badge");if(b)b.remove();}
-
-/* ── Reddit fetch ── */
-const PROXIES=[u=>u,u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`];
-let proxyOK=0;
-async function redditFetch(url){
-  for(let i=proxyOK;i<PROXIES.length;i++){
-    try{const res=await fetch(PROXIES[i](url),{headers:{Accept:"application/json"},signal:AbortSignal.timeout(9000)});if(!res.ok)throw new Error("HTTP "+res.status);const json=await res.json();proxyOK=i;return json;}
-    catch(e){console.warn(`[proxy ${i}] ${e.message}`);if(i===PROXIES.length-1)throw e;}
-  }
-}
-function resolveImg(d){const prev=d.preview?.images?.[0]?.source?.url;if(prev?.startsWith("http"))return prev;const direct=d.url_overridden_by_dest||d.url||"";if(/\.(jpg|jpeg|png|gif|webp)/i.test(direct))return direct;return null;}
-function isValid(d){return d&&!d.over_18&&!d.is_video&&!d.stickied&&!!resolveImg(d);}
-function toMeme(d){return{id:d.id,title:d.title||"Untitled",imageUrl:resolveImg(d),author:d.author||"[deleted]",sub:d.subreddit||"",score:d.score||0,numCmt:d.num_comments||0,permalink:d.permalink||""};}
 
 /* ── Username ── */
 function initUser(){if(username){$uOverlay.classList.add("gone");start();}else{$uInput.focus();}}
@@ -610,9 +635,9 @@ function submitUser(){
 $uGo.addEventListener("click",submitUser);
 $uInput.addEventListener("keydown",e=>{if(e.key==="Enter")submitUser();});
 
-/* ── Bottom nav ── */
+/* ── Nav ── */
 const $navBtns=document.querySelectorAll(".nav-btn[data-tab]");
-const $panels =document.querySelectorAll(".panel");
+const $panels=document.querySelectorAll(".panel");
 $navBtns.forEach(btn=>{
   btn.addEventListener("click",()=>{
     const tab=btn.dataset.tab;
@@ -622,7 +647,7 @@ $navBtns.forEach(btn=>{
     btn.classList.add("on");
     document.getElementById("p-"+tab).classList.add("on");
     if(tab==="chat"){chatOpen=true;unreadCount=0;clearNavBadge();hideBanner();requestAnimationFrame(()=>{$chatMsgs.scrollTop=$chatMsgs.scrollHeight;});}
-    else{chatOpen=false;}
+    else chatOpen=false;
   });
 });
 function refreshFeed(btn){
@@ -675,21 +700,49 @@ $subAddBtn.addEventListener("click",()=>addSub($subInput.value));
 $subInput.addEventListener("keydown",e=>{if(e.key==="Enter")addSub($subInput.value);});
 document.querySelectorAll(".pop-chip").forEach(c=>c.addEventListener("click",()=>addSub(c.dataset.s)));
 
+/* ══════════════════════════════════════════
+   MEDIA ELEMENT BUILDER
+   Creates <img> or <video> depending on type
+══════════════════════════════════════════ */
+function buildMediaEl(mediaUrl, mediaType, isGif, className=""){
+  let el;
+  if(mediaType==="video"){
+    el=document.createElement("video");
+    el.src=mediaUrl;
+    el.autoplay=true;
+    el.loop=true;
+    el.muted=true;
+    el.playsInline=true;
+    el.setAttribute("playsinline","");
+    el.setAttribute("webkit-playsinline","");
+    el.preload="auto";
+    if(className)el.className=className;
+  }else{
+    el=document.createElement("img");
+    el.alt="meme";
+    el.decoding="async";
+    if(className)el.className=className;
+  }
+  return el;
+}
+
 /* ── Feed card builder ── */
 function buildCard(m,mode="feed"){
-  const card=document.createElement("div");card.className="meme-card";card.dataset.id=m.id;card.dataset.sub=m.sub;
+  const card=document.createElement("div");
+  card.className="meme-card";card.dataset.id=m.id;card.dataset.sub=m.sub;
   card.innerHTML=`
     <div class="meme-info">
       <div class="meme-meta">
         <span>r/${esc(m.sub)}</span><span class="dot">·</span>
         <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score)}</span><span class="dot">·</span>
         <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt)}</span>
+        ${m.isGif?'<span class="dot">·</span><span style="color:var(--accent);font-weight:700">GIF</span>':""}
       </div>
       <div class="meme-title">${esc(m.title)}</div>
     </div>
     <div class="img-wrap">
       <div class="img-loader"><div class="spin"></div></div>
-      <img alt="${esc(m.title)}" decoding="async">
+      ${m.isGif?'<div class="gif-badge">GIF</div>':""}
     </div>
     <div class="meme-actions">
       <button class="maction save ${saved.has(m.id)?"saved":""}">
@@ -699,15 +752,39 @@ function buildCard(m,mode="feed"){
       <button class="maction cmt"><i class="fa-regular fa-comment"></i> Comments</button>
       <button class="maction share"><i class="fa-solid fa-paper-plane"></i> Send</button>
     </div>`;
-  const img=card.querySelector("img"),loader=card.querySelector(".img-loader");
+
+  const imgWrap=card.querySelector(".img-wrap");
+  const loader=card.querySelector(".img-loader");
+
   const io=new IntersectionObserver((entries,obs)=>{
     if(!entries[0].isIntersecting)return;obs.disconnect();
-    img.addEventListener("load",()=>{img.classList.add("visible");loader.classList.add("hide");},{once:true});
-    img.addEventListener("error",()=>{loader.innerHTML=`<div class="img-err"><i class="fa-regular fa-image"></i><span>Unavailable</span></div>`;},{once:true});
-    img.src=m.imageUrl;
+
+    const el=buildMediaEl(m.mediaUrl,m.mediaType,m.isGif);
+
+    if(m.mediaType==="video"){
+      el.addEventListener("loadeddata",()=>{el.classList.add("visible");loader.classList.add("hide");},{once:true});
+      el.addEventListener("error",()=>{loader.innerHTML=`<div class="img-err"><i class="fa-regular fa-image"></i><span>Unavailable</span></div>`;},{once:true});
+    }else{
+      el.addEventListener("load",()=>{el.classList.add("visible");loader.classList.add("hide");},{once:true});
+      el.addEventListener("error",()=>{
+        /* GIF failed → try loading as regular img without proxy */
+        if(m.isGif&&el.src!==m.mediaUrl){
+          el.src=m.mediaUrl;
+        }else{
+          loader.innerHTML=`<div class="img-err"><i class="fa-regular fa-image"></i><span>Unavailable</span></div>`;
+        }
+      },{once:true});
+      el.src=m.mediaUrl;
+    }
+
+    imgWrap.appendChild(el);
   },{rootMargin:"0px 0px 100% 0px",threshold:0});
   io.observe(card);
-  card.querySelector(".maction.share").addEventListener("click",async function(){await sendMeme(this,m);if(mode==="search")setTimeout(()=>switchToChat(),500);});
+
+  card.querySelector(".maction.share").addEventListener("click",async function(){
+    await sendMeme(this,m);
+    if(mode==="search")setTimeout(()=>switchToChat(),500);
+  });
   card.querySelector(".maction.cmt").addEventListener("click",()=>openComments(m.permalink,m.numCmt));
   card.querySelector(".maction.save").addEventListener("click",function(){toggleSave(this,m.id);});
   return card;
@@ -726,7 +803,10 @@ async function fetchFeedBatch(){
       const json=await redditFetch(url);if(!json?.data)continue;
       feedCursors[sub]=json.data.after||null;
       const frag=document.createDocumentFragment();
-      for(const{data:d}of(json.data.children||[])){if(seenIds.has(d.id)||!isValid(d))continue;seenIds.add(d.id);frag.appendChild(buildCard(toMeme(d),"feed"));added++;}
+      for(const{data:d}of(json.data.children||[])){
+        if(seenIds.has(d.id)||!isValid(d))continue;
+        seenIds.add(d.id);frag.appendChild(buildCard(toMeme(d),"feed"));added++;
+      }
       const sentinel=document.getElementById("feed-sentinel");
       if(sentinel)$feedScroll.insertBefore(frag,sentinel);else $feedScroll.appendChild(frag);
       saveSeen();
@@ -785,7 +865,12 @@ async function sendMeme(btn,m){
   if(btn.classList.contains("sent"))return;
   btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i>';btn.disabled=true;
   try{
-    await push(chatRef,{type:"meme",imageUrl:m.imageUrl,title:m.title,sub:m.sub,score:m.score,numCmt:m.numCmt,permalink:m.permalink,username,createdAt:Date.now()});
+    await push(chatRef,{
+      type:"meme",
+      mediaUrl:m.mediaUrl, mediaType:m.mediaType, isGif:m.isGif||false,
+      title:m.title, sub:m.sub, score:m.score, numCmt:m.numCmt,
+      permalink:m.permalink, username, createdAt:Date.now()
+    });
     btn.classList.add("sent");btn.innerHTML='<i class="fa-solid fa-check"></i> Sent!';toast("Sent to chat 🔥","ok");
   }catch{btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';btn.disabled=false;toast("Send failed","err");}
 }
@@ -795,7 +880,7 @@ function toggleSave(btn,id){
   saveSaved();
 }
 
-/* ── Comments ── */
+/* ── Comments — with GIF support ── */
 async function openComments(permalink,totalCount){
   $sheetBg.classList.add("on");$sheet.classList.add("on");
   $sheetCount.textContent=totalCount?` · ${fmtN(totalCount)}`:"";
@@ -807,9 +892,69 @@ async function openComments(permalink,totalCount){
     $sheetBody.innerHTML="";
     if(!cmts.length){$sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-regular fa-comment-slash"></i><span>No comments yet</span></div>`;return;}
     const frag=document.createDocumentFragment();
-    cmts.forEach(c=>{const d=c.data;const div=document.createElement("div");div.className="cmt-card";div.innerHTML=`<div class="cmt-header"><span class="cmt-author">u/${esc(d.author)}</span><span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score||0)}</span></div><div class="cmt-body">${esc(d.body)}</div><div class="cmt-time">${relTime(d.created_utc)}</div>`;frag.appendChild(div);});
+    cmts.forEach(c=>{
+      const d=c.data;
+      const div=document.createElement("div");div.className="cmt-card";
+
+      /* Clean comment body — remove markdown links, keep text */
+      const cleanBody=d.body
+        .replace(/\[([^\]]+)\]\([^)]+\)/g,"$1") // [text](url) → text
+        .replace(/\*\*([^*]+)\*\*/g,"$1")        // **bold** → bold
+        .replace(/\*([^*]+)\*/g,"$1")            // *italic* → italic
+        .replace(/~~([^~]+)~~/g,"$1")            // ~~strike~~ → text
+        .replace(/^#+\s/gm,"")                   // # headings
+        .replace(/^&gt;/gm,"")                   // > blockquote
+        .trim();
+
+      div.innerHTML=`
+        <div class="cmt-header">
+          <span class="cmt-author">u/${esc(d.author)}</span>
+          <span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score||0)}</span>
+        </div>
+        <div class="cmt-body">${esc(cleanBody)}</div>
+        <div class="cmt-time">${relTime(d.created_utc)}</div>`;
+
+      /* Check for GIF/media URLs in comment body */
+      const media=extractCommentMedia(d.body);
+      if(media){
+        const gifWrap=document.createElement("div");gifWrap.className="cmt-gif-wrap";
+        if(media.type==="video"){
+          const vid=document.createElement("video");
+          vid.src=media.url;vid.autoplay=true;vid.loop=true;vid.muted=true;vid.playsInline=true;
+          vid.setAttribute("playsinline","");
+          gifWrap.appendChild(vid);
+          const badge=document.createElement("div");badge.className="cmt-gif-badge";badge.textContent="GIF";
+          gifWrap.appendChild(badge);
+        }else{
+          const img=document.createElement("img");
+          img.src=media.url;img.loading="lazy";img.alt="gif";
+          gifWrap.appendChild(img);
+          if(/\.gif/i.test(media.url)){
+            const badge=document.createElement("div");badge.className="cmt-gif-badge";badge.textContent="GIF";
+            gifWrap.appendChild(badge);
+          }
+        }
+        div.appendChild(gifWrap);
+      }
+
+      /* Also check preview images on comment (rare but exists) */
+      const cmtPreview=d.preview?.images?.[0]?.source?.url;
+      if(cmtPreview&&!media){
+        const gifWrap=document.createElement("div");gifWrap.className="cmt-gif-wrap";
+        const img=document.createElement("img");
+        img.src=cmtPreview.replace(/&amp;/g,"&");img.loading="lazy";img.alt="preview";
+        gifWrap.appendChild(img);div.appendChild(gifWrap);
+      }
+
+      frag.appendChild(div);
+    });
     $sheetBody.appendChild(frag);
-    if(cmts.length>=50||(totalCount&&cmts.length<totalCount)){const note=document.createElement("p");note.style.cssText="text-align:center;color:var(--muted);font-size:11px;padding:6px 0";note.textContent=`Showing ${cmts.length} of ${fmtN(totalCount||cmts.length)}`;$sheetBody.appendChild(note);}
+    if(cmts.length>=50||(totalCount&&cmts.length<totalCount)){
+      const note=document.createElement("p");
+      note.style.cssText="text-align:center;color:var(--muted);font-size:11px;padding:6px 0";
+      note.textContent=`Showing ${cmts.length} of ${fmtN(totalCount||cmts.length)}`;
+      $sheetBody.appendChild(note);
+    }
     requestAnimationFrame(()=>{$sheetBody.scrollTop=0;});
   }catch{$sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-solid fa-triangle-exclamation"></i><span>Could not load comments</span></div>`;}
 }
@@ -817,7 +962,7 @@ function closeSheet(){$sheet.classList.remove("on");$sheetBg.classList.remove("o
 $sheetBg.addEventListener("click",closeSheet);
 $sheetX.addEventListener("click",closeSheet);
 
-/* ── Chat send text ── */
+/* ── Chat text ── */
 async function sendText(){
   const txt=$chatIn.value.trim();if(!txt)return;$chatIn.value="";
   try{await push(chatRef,{type:"text",text:txt,username,createdAt:Date.now()});}
@@ -826,48 +971,61 @@ async function sendText(){
 $chatSend.addEventListener("click",sendText);
 $chatIn.addEventListener("keydown",e=>{if(e.key==="Enter")sendText();});
 
-/* ── Build chat meme card — FULL SIZE matching feed ── */
+/* ── Chat meme card — supports GIF/video ── */
 function buildChatMemeCard(m){
-  const card=document.createElement("div");
-  card.className="msg-meme-card";
+  const card=document.createElement("div");card.className="msg-meme-card";
 
-  /* Top info bar */
+  /* Info */
   const info=document.createElement("div");info.className="msg-meme-info";
   info.innerHTML=`
     <div class="msg-meme-meta">
-      <span>r/${esc(m.sub||"")}</span>
-      <span class="dot">·</span>
-      <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span>
-      <span class="dot">·</span>
+      <span>r/${esc(m.sub||"")}</span><span class="dot">·</span>
+      <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span><span class="dot">·</span>
       <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
+      ${m.isGif?'<span class="dot">·</span><span style="color:var(--accent);font-weight:700;font-size:9px">GIF</span>':""}
     </div>
     <div class="msg-meme-title">${esc(m.title||"")}</div>`;
 
-  /* Image wrap */
+  /* Media */
   const imgWrap=document.createElement("div");imgWrap.className="msg-meme-img-wrap";
-  const img=document.createElement("img");
-  img.alt=m.title||"";img.loading="lazy";img.decoding="async";
-  /* Once image loads, adjust aspect ratio to match actual image */
-  img.addEventListener("load",()=>{
-    const ratio=img.naturalWidth/img.naturalHeight;
-    /* landscape → 16:9, portrait → 4:3, square → 1:1 */
-    if(ratio>1.4) imgWrap.style.aspectRatio="16/9";
-    else if(ratio<0.8) imgWrap.style.aspectRatio="3/4";
-    else imgWrap.style.aspectRatio="1/1";
-  },{once:true});
-  img.src=m.imageUrl||"";
-  imgWrap.appendChild(img);
 
-  /* Bottom action bar */
+  /* Determine media type — handle legacy imageUrl field too */
+  const mediaUrl=m.mediaUrl||m.imageUrl||"";
+  const mediaType=m.mediaType||(isMp4(mediaUrl)?"video":"img");
+  const gifFlag=m.isGif||isGif(mediaUrl)||isMp4(mediaUrl);
+
+  if(mediaType==="video"){
+    const vid=document.createElement("video");
+    vid.src=mediaUrl;vid.autoplay=true;vid.loop=true;vid.muted=true;vid.playsInline=true;
+    vid.setAttribute("playsinline","");vid.style.cssText="width:100%;height:100%;object-fit:contain;";
+    imgWrap.appendChild(vid);
+  }else{
+    const img=document.createElement("img");
+    img.src=mediaUrl;img.loading="lazy";img.decoding="async";
+    img.style.cssText="width:100%;height:100%;object-fit:contain;";
+    img.addEventListener("load",()=>{
+      const r=img.naturalWidth/img.naturalHeight;
+      if(r>1.4)imgWrap.style.aspectRatio="16/9";
+      else if(r<0.8)imgWrap.style.aspectRatio="3/4";
+      else imgWrap.style.aspectRatio="1/1";
+    },{once:true});
+    imgWrap.appendChild(img);
+  }
+
+  if(gifFlag){
+    const badge=document.createElement("div");
+    badge.style.cssText="position:absolute;bottom:6px;left:6px;background:rgba(0,0,0,.75);color:#fff;font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 6px;border-radius:5px;border:1px solid rgba(255,255,255,.2);pointer-events:none;z-index:5;";
+    badge.textContent="GIF";imgWrap.appendChild(badge);
+  }
+
+  /* Footer */
   const actions=document.createElement("div");actions.className="msg-meme-actions";
   actions.innerHTML=`
     <span class="msg-meme-stat"><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span>
     <span class="msg-meme-stat"><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
     <span class="msg-meme-sub-badge">r/${esc(m.sub||"")}</span>`;
 
-  card.appendChild(info);
-  card.appendChild(imgWrap);
-  card.appendChild(actions);
+  card.appendChild(info);card.appendChild(imgWrap);card.appendChild(actions);
   return card;
 }
 
@@ -877,36 +1035,20 @@ onChildAdded(query(chatRef,limitToLast(150)),snap=>{
   $chatEmpty.style.display="none";
   const mine=m.username===username;
   const atBottom=isAtBottom();
-
-  const wrap=document.createElement("div");
-  wrap.className="msg "+(mine?"out":"in");
-
-  /* Who label */
+  const wrap=document.createElement("div");wrap.className="msg "+(mine?"out":"in");
   const who=document.createElement("div");who.className="msg-who";who.textContent=m.username;wrap.appendChild(who);
-
   if(m.type==="meme"){
-    /* Full-size meme card in its own outer div for alignment */
     const outer=document.createElement("div");outer.className="msg-meme-outer";
-    outer.appendChild(buildChatMemeCard(m));
-    wrap.appendChild(outer);
+    outer.appendChild(buildChatMemeCard(m));wrap.appendChild(outer);
   }else{
     const bw=document.createElement("div");bw.className="msg-bubble-wrap";
-    const bubble=document.createElement("div");bubble.className="msg-bubble";
-    bubble.textContent=m.text||"";bw.appendChild(bubble);wrap.appendChild(bw);
+    const bubble=document.createElement("div");bubble.className="msg-bubble";bubble.textContent=m.text||"";
+    bw.appendChild(bubble);wrap.appendChild(bw);
   }
-
-  /* Timestamp */
   const ts=document.createElement("div");ts.className="msg-ts";ts.textContent=fmtT(m.createdAt);wrap.appendChild(ts);
-
   $chatMsgs.appendChild(wrap);
-
-  if(atBottom||firstLoad){
-    requestAnimationFrame(()=>{$chatMsgs.scrollTop=$chatMsgs.scrollHeight;});
-  }else if(!mine){
-    unreadCount++;
-    if(!chatOpen)setNavBadge(unreadCount);
-    showBanner(unreadCount);
-  }
+  if(atBottom||firstLoad){requestAnimationFrame(()=>{$chatMsgs.scrollTop=$chatMsgs.scrollHeight;});}
+  else if(!mine){unreadCount++;if(!chatOpen)setNavBadge(unreadCount);showBanner(unreadCount);}
   firstLoad=false;
 });
 
