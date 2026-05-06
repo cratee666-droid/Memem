@@ -1,804 +1,418 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="theme-color" content="#0a0a0a">
-    <meta name="mobile-web-app-capable" content="yes">
-    <title>MemeVault</title>
-    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Outfit:wght@700;900&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <style>
-        :root {
-            --bg: #0a0a0a;
-            --bg2: #111111;
-            --card: #181818;
-            --card-hover: #222222;
-            --fg: #f2f2f2;
-            --muted: #888;
-            --accent: #ff6b2b;
-            --accent2: #ff9f43;
-            --accent-dim: rgba(255,107,43,0.12);
-            --accent-glow: rgba(255,107,43,0.4);
-            --green: #3ddc84;
-            --red: #ff4757;
-            --blue: #4dabf7;
-            --border: #222;
-            --radius: 16px;
-            --radius-sm: 10px;
-            --bottomnav-h: 56px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0,
+maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#0a0a0a">
+<meta name="mobile-web-app-capable" content="yes">
+<title>MemeVault</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Outfit:wght@900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+--bg: #0a0a0a;
+--bg2: #111111;
+--card: #181818;
+--card-hover: #222222;
+--fg: #f2f2f2;
+--muted: #888;
+--accent: #ff6b2b;
+--accent2: #ff9f43;
+--accent-dim: rgba(255,107,43,0.12);
+--accent-glow: rgba(255,107,43,0.4);
+--green: #3ddc84;
+--red: #ff4757;
+--blue: #4dabf7;
+--border: #222;
+--radius: 16px;
+--radius-sm: 10px;
+--bottomnav-h: 56px;
+}
+*, *::before, *::after {
+margin: 0; padding: 0; box-sizing: border-box;
+-webkit-tap-highlight-color: transparent;
+-webkit-user-select: none;
+user-select: none;
+}
+html { height: 100%; height: -webkit-fill-available; }
+body {
+font-family: 'Space Grotesk', sans-serif;
+background: var(--bg); color: var(--fg);
+height: 100%; height: -webkit-fill-available;
+overflow: hidden; will-change: transform; overscroll-behavior: none;
+}
+.ambient { position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden; will-change: transform; }
+.orb { position: absolute; border-radius: 50%; filter: blur(80px); opacity: .05; will-change: transform; }
+.orb-1 { width: 350px; height: 350px; background: #ff6b2b; top: -100px; right: -100px; animation: drift 14s ease-in-out infinite; }
+.orb-2 { width: 300px; height: 300px; background: #ff9f43; bottom: -80px; left: -80px; animation: drift 18s ease-in-out infinite reverse; }
+@keyframes drift {
+0%,100% { transform: translate3d(0,0,0) scale(1); }
+50% { transform: translate3d(18px,-22px,0) scale(1.06); }
+}
+#toasts { position: fixed; top: 10px; left: 50%; transform: translateX(-50%); z-index: 9999; display: flex; flex-direction: column; gap: 5px; pointer-events: none; will-change: transform; }
+.toast { padding: 8px 18px; background: #1c1c1c; border: 1px solid #333; border-radius: 20px; font-size: 12px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,.5); white-space: nowrap; animation: tIn .25s ease, tOut .3s ease 2s forwards; }
+.toast.ok { border-color: var(--green); color: var(--green); }
+.toast.err { border-color: var(--red); color: var(--red); }
+.toast.info { border-color: var(--blue); color: var(--blue); }
+@keyframes tIn { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+@keyframes tOut { to { opacity:0; } }
+.uname-overlay { position: fixed; inset: 0; z-index: 2000; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; transition: opacity .35s, visibility .35s; }
+.uname-overlay.gone { opacity: 0; visibility: hidden; pointer-events: none; }
+.uname-logo { font-family: 'Outfit', sans-serif; font-size: 50px; font-weight: 900; letter-spacing: -2px; background: linear-gradient(135deg,#ff6b2b,#ff9f43,#e55039); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+.uname-sub { color: var(--muted); font-size: 13px; margin-top: -8px; }
+.uname-box { display: flex; flex-direction: column; gap: 10px; width: 85vw; max-width: 320px; }
+.uname-box input { padding: 13px 16px; border: 2px solid var(--border); border-radius: var(--radius); background: var(--card); color: var(--fg); font-family: inherit; font-size: 16px; outline: none; transition: border-color .25s; -webkit-user-select: text; user-select: text; }
+.uname-box input:focus { border-color: var(--accent); }
+.uname-box input::placeholder { color: var(--muted); }
+.btn-primary { padding: 13px; background: linear-gradient(135deg,var(--accent),#e55039); color: #fff; border: none; border-radius: var(--radius); font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer; transition: transform .12s, box-shadow .2s; touch-action: manipulation; }
+.btn-primary:active { transform: scale(.97); }
+.app { display: flex; flex-direction: column; height: 100vh; height: -webkit-fill-available; position: relative; z-index: 1; isolation: isolate; }
+.panels { flex: 1; overflow: hidden; position: relative; min-height: 0; }
+.panel { position: absolute; inset: 0; opacity: 0; visibility: hidden; transition: opacity .18s, visibility .18s; display: flex; flex-direction: column; }
+.panel.on { opacity: 1; visibility: visible; }
+.bottomnav { height: var(--bottomnav-h); display: flex; align-items: center; justify-content: space-around; background: #0d0d0d; border-top: 1px solid var(--border); flex-shrink: 0; z-index: 100; will-change: transform; }
+.nav-btn { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; background: none; border: none; color: var(--muted); font-family: inherit; cursor: pointer; padding: 6px; touch-action: manipulation; transition: color .15s; position: relative; }
+.nav-btn i { font-size: 22px; margin-bottom: 2px; }
+.nav-btn span { font-size: 10px; font-weight: 600; }
+.nav-btn.on { color: var(--accent); }
+.nav-btn::after { content: ''; position: absolute; width: 44px; height: 44px; border-radius: 50%; background: var(--accent-dim); transform: scale(0); opacity: 0; transition: transform .3s, opacity .3s; }
+.nav-btn:active::after { transform: scale(1); opacity: 1; transition: none; }
+.nav-badge { position: absolute; top: 2px; right: calc(50% - 18px); background: var(--red); color: #fff; font-size: 9px; font-weight: 700; min-width: 16px; height: 16px; border-radius: 8px; padding: 0 4px; display: flex; align-items: center; justify-content: center; border: 2px solid #0d0d0d; animation: badgePop .25s cubic-bezier(.34,1.56,.64,1); pointer-events: none; }
+@keyframes badgePop { from { transform: scale(0); } to { transform: scale(1); } }
+@keyframes iconSpin {
+0% { transform: rotate(0deg) scale(1); }
+40% { transform: rotate(200deg) scale(1.15); }
+100% { transform: rotate(360deg) scale(1); }
+}
+.nav-btn.refreshing i { animation: iconSpin .5s cubic-bezier(.4,0,.2,1) forwards; color: var(--accent); }
+.feed-top-bar { flex-shrink: 0; padding: 7px 10px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.subs-row { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding-bottom: 2px; -webkit-overflow-scrolling: touch; scroll-behavior: smooth; }
+.subs-row::-webkit-scrollbar { display: none; }
+.sub-chip { flex-shrink: 0; padding: 5px 11px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); font-size: 11px; font-weight: 600; color: var(--muted); cursor: pointer; touch-action: manipulation; transition: all .15s; display: flex; align-items: center; gap: 4px; white-space: nowrap; font-family: inherit; }
+.sub-chip.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
+.sub-chip .rm { font-size: 10px; opacity: .5; }
+.add-sub-btn { flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%; background: var(--card); border: 1.5px dashed var(--border); color: var(--accent); cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; font-size: 13px; transition: all .2s; }
+.search-overlay { position: fixed; inset: 0; z-index: 500; background: var(--bg); display: flex; flex-direction: column; opacity: 0; visibility: hidden; transform: translateZ(0); transition: opacity .25s, visibility .25s; }
+.search-overlay.show { opacity: 1; visibility: visible; }
+.search-header { flex-shrink: 0; padding: 10px 12px; background: #0d0d0d; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.search-back { width: 36px; height: 36px; border-radius: 50%; background: var(--card); border: none; color: var(--fg); display: flex; align-items: center; justify-content: center; cursor: pointer; font-size: 15px; flex-shrink: 0; touch-action: manipulation; }
+.search-input-wrap { flex: 1; display: flex; align-items: center; gap: 8px; background: var(--card); border: 1.5px solid var(--border); border-radius: 22px; padding: 0 12px; transition: border-color .2s; }
+.search-input-wrap:focus-within { border-color: var(--accent); }
+.search-input-wrap i { color: var(--muted); font-size: 13px; }
+.search-input-wrap input { flex: 1; padding: 10px 0; background: none; border: none; outline: none; color: var(--fg); font-family: inherit; font-size: 16px; -webkit-user-select: text; user-select: text; }
+.search-input-wrap input::placeholder { color: var(--muted); }
+.search-clear-btn { background: none; border: none; color: var(--muted); cursor: pointer; padding: 4px; font-size: 14px; touch-action: manipulation; display: none; }
+.search-clear-btn.vis { display: block; }
+.search-scroll { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior-y: contain; display: flex; flex-direction: column; will-change: scroll-position; }
+.search-scroll::-webkit-scrollbar { display: none; }
+.feed-scroll { flex: 1; overflow-y: auto; scroll-snap-type: y mandatory; overscroll-behavior-y: contain; display: flex; flex-direction: column; will-change: scroll-position; }
+.feed-scroll::-webkit-scrollbar { display: none; }
+.feed-refresh-flash { position: absolute; inset: 0; z-index: 10; background: rgba(255,107,43,.07); pointer-events: none; animation: flashFade .4s ease forwards; will-change: opacity; }
+@keyframes flashFade { from{opacity:1} to{opacity:0} }
+.meme-card { flex-shrink: 0; height: 100%; scroll-snap-align: start; scroll-snap-stop: always; display: flex; flex-direction: column; background: var(--bg); position: relative; contain: layout style paint; }
+.img-wrap { flex: 1; position: relative; overflow: hidden; background: #0d0d0d; display: flex; align-items: center; justify-content: center; min-height: 0; contain: strict; }
+.img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: contain; opacity: 0; transition: opacity .35s ease; decoding: async; content-visibility: auto; }
+.img-wrap img.visible { opacity: 1; }
+.img-loader { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; transition: opacity .25s; }
+.img-loader.hide { opacity: 0; pointer-events: none; }
+.img-err { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; text-align: center; padding: 20px; }
+.img-err i { font-size: 32px; opacity: .3; }
+.meme-info { flex-shrink: 0; padding: 9px 13px 14px; background: linear-gradient(to bottom,rgba(10,10,10,1),rgba(10,10,10,.92)); border-bottom: 1px solid var(--border); contain: layout style; }
+.meme-meta { font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 4px; }
+.meme-meta .dot { opacity: .3; }
+.meme-title { font-size: 13px; font-weight: 600; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.meme-actions { flex-shrink: 0; padding: 10px 13px 14px; background: linear-gradient(to top,rgba(10,10,10,1),rgba(10,10,10,.92)); border-top: 1px solid var(--border); display: flex; gap: 6px; flex-wrap: wrap; contain: layout style; }
+.maction { display: flex; align-items: center; gap: 4px; padding: 7px 13px; border-radius: 20px; border: none; font-family: inherit; font-size: 12px; font-weight: 600; cursor: pointer; touch-action: manipulation; transition: transform .1s, opacity .15s; -webkit-user-select: none; user-select: none; }
+.maction:active { transform: scale(.92); opacity: .85; }
+.maction i { font-size: 11px; }
+.maction.share { background: var(--accent); color: #fff; }
+.maction.share.sent { background: var(--green); pointer-events: none; }
+.maction.cmt { background: var(--card); color: var(--fg); border: 1px solid var(--border); }
+.maction.save { background: var(--card); color: var(--fg); border: 1px solid var(--border); }
+.maction.save.saved { color: var(--accent2); border-color: var(--accent2); }
+.feed-state { height: 100%; flex-shrink: 0; scroll-snap-align: start; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 30px; color: var(--muted); font-size: 14px; text-align: center; }
+.feed-state i { font-size: 38px; opacity: .22; }
+.retry-btn { margin-top: 4px; padding: 9px 22px; background: var(--accent); color: #fff; border: none; border-radius: 20px; font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.sentinel { flex-shrink: 0; height: 60px; display: flex; align-items: center; justify-content: center; contain: strict; }
+.spin { width: 28px; height: 28px; border: 3px solid #282828; border-top-color: var(--accent); border-radius: 50%; animation: spin .7s linear infinite; will-change: transform; }
+.spin.lg { width: 40px; height: 40px; border-width: 4px; }
+@keyframes spin { to { transform: rotate(360deg); } }
+.modal-bg { position: fixed; inset: 0; z-index: 800; background: rgba(0,0,0,.6); display: flex; align-items: flex-end; justify-content: center; opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+.modal-bg.on { opacity: 1; visibility: visible; }
+.modal { background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0; width: 100%; padding: 18px 16px 32px; transform: translateY(20px); transition: transform .3s cubic-bezier(.32,.72,0,1); padding-bottom: max(32px, env(safe-area-inset-bottom)); }
+.modal-bg.on .modal { transform: translateY(0); }
+.modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+.modal-head h3 { font-size: 15px; font-weight: 700; }
+.modal-close { width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: none; color: var(--fg); cursor: pointer; touch-action: manipulation; display: flex; align-items: center; justify-content: center; font-size: 13px; }
+.modal-row { display: flex; gap: 8px; margin-bottom: 14px; }
+.modal-row input { flex: 1; padding: 11px 13px; background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); color: var(--fg); font-family: inherit; font-size: 16px; outline: none; transition: border-color .2s; -webkit-user-select: text; user-select: text; }
+.modal-row input:focus { border-color: var(--accent); }
+.modal-row input::placeholder { color: var(--muted); }
+.modal-row button { padding: 11px 16px; background: var(--accent); color: #fff; border: none; border-radius: var(--radius-sm); font-family: inherit; font-size: 13px; font-weight: 700; cursor: pointer; touch-action: manipulation; }
+.modal-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
+.pop-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.pop-chip { padding: 5px 11px; border-radius: 14px; background: var(--card); border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--muted); cursor: pointer; touch-action: manipulation; transition: all .15s; }
+.pop-chip:active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
 
-        /* ── Reset & base ── */
-        *, *::before, *::after {
-            margin: 0; padding: 0; box-sizing: border-box;
-            /* Android: turn off tap highlight flash */
-            -webkit-tap-highlight-color: transparent;
-            /* Prevent text selection on UI elements */
-            -webkit-user-select: none;
-            user-select: none;
-        }
-        html {
-            height: 100%;
-            /* Android Chrome address bar compensation */
-            height: -webkit-fill-available;
-        }
-        body {
-            font-family: 'Space Grotesk', sans-serif;
-            background: var(--bg);
-            color: var(--fg);
-            height: 100%;
-            height: -webkit-fill-available;
-            overflow: hidden;
-            /* GPU layer for root — smoother compositing */
-            will-change: transform;
-            /* Prevent Android pull-to-refresh interfering */
-            overscroll-behavior: none;
-        }
+/* ── CHAT ── */
+.chat-header { flex-shrink: 0; background: #0d0d0d; border-bottom: 1px solid var(--border); padding: 8px 12px; }
+.chat-header-top { display: flex; align-items: center; justify-content: space-between; }
+.chat-header-title { font-size: 14px; font-weight: 700; display: flex; align-items: center; gap: 6px; }
+.chat-header-title i { color: var(--accent); font-size: 12px; }
+.online-strip { display: flex; align-items: center; gap: 6px; overflow-x: auto; padding: 6px 0 2px; -webkit-overflow-scrolling: touch; }
+.online-strip::-webkit-scrollbar { display: none; }
+.online-count { font-size: 11px; color: var(--green); font-weight: 600; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.online-count::before { content: ''; width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 6px var(--green); animation: pulse 2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity:1; transform:scale(1); } 50% { opacity:.6; transform:scale(1.3); } }
+.online-avatar { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: var(--card); border: 1.5px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; color: var(--accent); position: relative; }
+.online-avatar::after { content: ''; position: absolute; bottom: 0; right: 0; width: 7px; height: 7px; border-radius: 50%; background: var(--green); border: 1.5px solid #0d0d0d; }
+.online-name { font-size: 9px; color: var(--muted); margin-top: 2px; text-align: center; max-width: 36px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.online-user-wrap { display: flex; flex-direction: column; align-items: center; gap: 1px; flex-shrink: 0; }
+.new-msg-banner { position: absolute; bottom: 70px; left: 50%; transform: translateX(-50%); z-index: 50; background: var(--accent); color: #fff; padding: 7px 16px; border-radius: 20px; font-size: 12px; font-weight: 700; display: flex; align-items: center; gap: 6px; box-shadow: 0 4px 20px rgba(255,107,43,.5); cursor: pointer; touch-action: manipulation; animation: slideUp .3s cubic-bezier(.34,1.56,.64,1); white-space: nowrap; }
+.new-msg-banner.hidden { display: none; }
+@keyframes slideUp { from { opacity:0; transform:translateX(-50%) translateY(10px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+.chat-msgs { flex: 1; overflow-y: auto; overscroll-behavior-y: contain; padding: 10px 12px; display: flex; flex-direction: column; gap: 8px; min-height: 0; will-change: scroll-position; position: relative; }
+.chat-msgs::-webkit-scrollbar { width: 3px; }
+.chat-msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+.chat-empty { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); font-size: 13px; }
+.chat-empty i { font-size: 36px; opacity: .2; }
+.msg { max-width: 85%; display: flex; flex-direction: column; animation: mup .2s ease; }
+@keyframes mup { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
+.msg.in { align-self: flex-start; }
+.msg.out { align-self: flex-end; }
+.msg-bubble { padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
+.msg.in .msg-bubble { background: var(--card); border-bottom-left-radius: 4px; }
+.msg.out .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
+.msg-who { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; padding: 0 2px; }
+.msg.in .msg-who { color: var(--accent); }
+.msg.out .msg-who { color: rgba(255,255,255,.5); text-align: right; }
+.msg-ts { font-size: 9px; opacity: .35; margin-top: 3px; padding: 0 2px; }
+.msg.out .msg-ts { text-align: right; }
 
-        /* ── Ambient orbs — cheaper on Android GPU ── */
-        .ambient {
-            position: fixed; inset: 0; pointer-events: none; z-index: 0; overflow: hidden;
-            /* Own compositor layer */
-            will-change: transform;
-        }
-        .orb {
-            position: absolute; border-radius: 50%;
-            /* blur is GPU-accelerated but expensive — keep small count */
-            filter: blur(80px); opacity: .05;
-            /* promote each orb to its own layer */
-            will-change: transform;
-        }
-        .orb-1 { width: 350px; height: 350px; background: #ff6b2b; top: -100px; right: -100px; animation: drift 14s ease-in-out infinite; }
-        .orb-2 { width: 300px; height: 300px; background: #ff9f43; bottom: -80px;  left: -80px;   animation: drift 18s ease-in-out infinite reverse; }
-        /* Removed orb-3 — reduces GPU overdraw on mid-range Android */
-        @keyframes drift {
-            0%,100% { transform: translate3d(0,0,0) scale(1); }
-            50%      { transform: translate3d(18px,-22px,0) scale(1.06); }
-        }
-
-        /* ── Toast ── */
-        #toasts {
-            position: fixed; top: 10px; left: 50%; transform: translateX(-50%);
-            z-index: 9999; display: flex; flex-direction: column; gap: 5px;
-            pointer-events: none;
-            /* Own layer so feed scroll doesn't repaint toasts */
-            will-change: transform;
-        }
-        .toast {
-            padding: 8px 18px; background: #1c1c1c; border: 1px solid #333;
-            border-radius: 20px; font-size: 12px; font-weight: 600;
-            box-shadow: 0 4px 20px rgba(0,0,0,.5); white-space: nowrap;
-            animation: tIn .25s ease, tOut .3s ease 2s forwards;
-        }
-        .toast.ok   { border-color: var(--green); color: var(--green); }
-        .toast.err  { border-color: var(--red);   color: var(--red);   }
-        .toast.info { border-color: var(--blue);  color: var(--blue);  }
-        @keyframes tIn  { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes tOut { to   { opacity:0; } }
-
-        /* ── Username Overlay ── */
-        .uname-overlay {
-            position: fixed; inset: 0; z-index: 2000; background: var(--bg);
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px;
-            transition: opacity .35s, visibility .35s;
-        }
-        .uname-overlay.gone { opacity: 0; visibility: hidden; pointer-events: none; }
-        .uname-logo {
-            font-family: 'Outfit', sans-serif; font-size: 50px; font-weight: 900; letter-spacing: -2px;
-            background: linear-gradient(135deg,#ff6b2b,#ff9f43,#e55039);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-        .uname-sub { color: var(--muted); font-size: 13px; margin-top: -8px; }
-        .uname-box { display: flex; flex-direction: column; gap: 10px; width: 85vw; max-width: 320px; }
-        .uname-box input {
-            padding: 13px 16px; border: 2px solid var(--border); border-radius: var(--radius);
-            background: var(--card); color: var(--fg); font-family: inherit; font-size: 16px;
-            /* font-size 16px prevents Android auto-zoom on focus */
-            outline: none; transition: border-color .25s;
-            /* Allow text select in inputs */
-            -webkit-user-select: text; user-select: text;
-        }
-        .uname-box input:focus { border-color: var(--accent); }
-        .uname-box input::placeholder { color: var(--muted); }
-        .btn-primary {
-            padding: 13px; background: linear-gradient(135deg,var(--accent),#e55039);
-            color: #fff; border: none; border-radius: var(--radius);
-            font-family: inherit; font-size: 15px; font-weight: 700; cursor: pointer;
-            /* Hardware-accelerated active state */
-            transition: transform .12s, box-shadow .2s;
-            touch-action: manipulation; /* faster tap on Android */
-        }
-        .btn-primary:active { transform: scale(.97); }
-
-        /* ── App shell ── */
-        .app {
-            display: flex; flex-direction: column;
-            height: 100vh;
-            height: -webkit-fill-available;
-            position: relative; z-index: 1;
-            /* Isolate compositing context */
-            isolation: isolate;
-        }
-
-        /* ── Panels ── */
-        .panels { flex: 1; overflow: hidden; position: relative; min-height: 0; }
-        .panel {
-            position: absolute; inset: 0; opacity: 0; visibility: hidden;
-            /* Use opacity for panel switch — cheaper than display:none repaint */
-            transition: opacity .18s, visibility .18s;
-            display: flex; flex-direction: column;
-        }
-        .panel.on { opacity: 1; visibility: visible; }
-
-        /* ── Bottom Nav ── */
-        .bottomnav {
-            height: var(--bottomnav-h);
-            display: flex; align-items: center; justify-content: space-around;
-            /* Solid bg — avoid backdrop-filter on Android (very slow) */
-            background: #0d0d0d;
-            border-top: 1px solid var(--border);
-            flex-shrink: 0; z-index: 100;
-            /* Own compositing layer */
-            will-change: transform;
-        }
-        .nav-btn {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center;
-            background: none; border: none; color: var(--muted);
-            font-family: inherit; cursor: pointer; padding: 6px;
-            /* Fast tap: no 300ms delay */
-            touch-action: manipulation;
-            transition: color .15s;
-            position: relative;
-        }
-        .nav-btn i { font-size: 22px; margin-bottom: 2px; }
-        .nav-btn span { font-size: 10px; font-weight: 600; }
-        .nav-btn.on { color: var(--accent); }
-        /* Active ripple using ::after — no JS needed */
-        .nav-btn::after {
-            content: ''; position: absolute;
-            width: 44px; height: 44px; border-radius: 50%;
-            background: var(--accent-dim);
-            transform: scale(0); opacity: 0;
-            transition: transform .3s, opacity .3s;
-        }
-        .nav-btn:active::after { transform: scale(1); opacity: 1; transition: none; }
-
-        /* Feed icon refresh animation */
-        @keyframes iconSpin {
-            0%   { transform: rotate(0deg)   scale(1);   }
-            40%  { transform: rotate(200deg) scale(1.15);}
-            100% { transform: rotate(360deg) scale(1);   }
-        }
-        .nav-btn.refreshing i {
-            animation: iconSpin .5s cubic-bezier(.4,0,.2,1) forwards;
-            color: var(--accent);
-        }
-
-        /* ════════════════════════════════
-           SUBREDDIT CHIPS
-        ════════════════════════════════ */
-        .feed-top-bar {
-            flex-shrink: 0; padding: 7px 10px;
-            background: var(--bg2); border-bottom: 1px solid var(--border);
-        }
-        .subs-row {
-            display: flex; align-items: center; gap: 6px;
-            overflow-x: auto; padding-bottom: 2px;
-            /* Android momentum scroll on chip row */
-            -webkit-overflow-scrolling: touch;
-            scroll-behavior: smooth;
-        }
-        .subs-row::-webkit-scrollbar { display: none; }
-        .sub-chip {
-            flex-shrink: 0; padding: 5px 11px; border-radius: 14px;
-            background: var(--card); border: 1px solid var(--border);
-            font-size: 11px; font-weight: 600; color: var(--muted);
-            cursor: pointer; touch-action: manipulation;
-            transition: all .15s; display: flex; align-items: center; gap: 4px;
-            white-space: nowrap; font-family: inherit;
-        }
-        .sub-chip.on { background: var(--accent-dim); border-color: var(--accent); color: var(--accent); }
-        .sub-chip .rm { font-size: 10px; opacity: .5; }
-        .add-sub-btn {
-            flex-shrink: 0; width: 28px; height: 28px; border-radius: 50%;
-            background: var(--card); border: 1.5px dashed var(--border);
-            color: var(--accent); cursor: pointer; touch-action: manipulation;
-            display: flex; align-items: center; justify-content: center;
-            font-size: 13px; transition: all .2s;
-        }
-
-        /* ════════════════════════════════
-           SEARCH OVERLAY
-        ════════════════════════════════ */
-        .search-overlay {
-            position: fixed; inset: 0; z-index: 500;
-            background: var(--bg);
-            display: flex; flex-direction: column;
-            opacity: 0; visibility: hidden;
-            /* translateZ trick — promotes to own layer before show */
-            transform: translateZ(0);
-            transition: opacity .25s, visibility .25s;
-        }
-        .search-overlay.show { opacity: 1; visibility: visible; }
-
-        .search-header {
-            flex-shrink: 0; padding: 10px 12px;
-            /* Solid bg — no backdrop-filter */
-            background: #0d0d0d;
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 8px;
-        }
-        .search-back {
-            width: 36px; height: 36px; border-radius: 50%;
-            background: var(--card); border: none; color: var(--fg);
-            display: flex; align-items: center; justify-content: center;
-            cursor: pointer; font-size: 15px; flex-shrink: 0;
-            touch-action: manipulation;
-        }
-        .search-input-wrap {
-            flex: 1; display: flex; align-items: center; gap: 8px;
-            background: var(--card); border: 1.5px solid var(--border);
-            border-radius: 22px; padding: 0 12px;
-            transition: border-color .2s;
-        }
-        .search-input-wrap:focus-within { border-color: var(--accent); }
-        .search-input-wrap i { color: var(--muted); font-size: 13px; }
-        .search-input-wrap input {
-            flex: 1; padding: 10px 0; background: none; border: none;
-            outline: none; color: var(--fg); font-family: inherit;
-            font-size: 16px; /* Prevent Android zoom */
-            -webkit-user-select: text; user-select: text;
-        }
-        .search-input-wrap input::placeholder { color: var(--muted); }
-        .search-clear-btn {
-            background: none; border: none; color: var(--muted);
-            cursor: pointer; padding: 4px; font-size: 14px;
-            touch-action: manipulation; display: none;
-        }
-        .search-clear-btn.vis { display: block; }
-
-        /* Search scroll — same snap as feed */
-        .search-scroll {
-            flex: 1; overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            /* Android scroll — NO -webkit-overflow-scrolling (deprecated/slow on Android) */
-            overscroll-behavior-y: contain;
-            display: flex; flex-direction: column;
-            /* GPU compositing */
-            will-change: scroll-position;
-        }
-        .search-scroll::-webkit-scrollbar { display: none; }
-
-        /* ════════════════════════════════
-           FEED SCROLL + MEME CARD
-        ════════════════════════════════ */
-        .feed-scroll {
-            flex: 1; overflow-y: auto;
-            scroll-snap-type: y mandatory;
-            /* Android: standard overscroll, NOT -webkit-overflow-scrolling */
-            overscroll-behavior-y: contain;
-            display: flex; flex-direction: column;
-            /* Tell browser this will scroll — pre-allocate compositor layer */
-            will-change: scroll-position;
-        }
-        .feed-scroll::-webkit-scrollbar { display: none; }
-
-        /* Refresh flash */
-        .feed-refresh-flash {
-            position: absolute; inset: 0; z-index: 10;
-            background: rgba(255,107,43,.07);
-            pointer-events: none;
-            animation: flashFade .4s ease forwards;
-            /* GPU layer */
-            will-change: opacity;
-        }
-        @keyframes flashFade { from{opacity:1} to{opacity:0} }
-
-        .meme-card {
-            flex-shrink: 0; height: 100%;
-            scroll-snap-align: start;
-            /* scroll-snap-stop: always forces one card per swipe on Android */
-            scroll-snap-stop: always;
-            display: flex; flex-direction: column;
-            background: var(--bg); position: relative;
-            /* Each card its own layer — prevents neighbouring card repaint */
-            contain: layout style paint;
-        }
-
-        /* Image area */
-        .img-wrap {
-            flex: 1; position: relative; overflow: hidden;
-            background: #0d0d0d;
-            display: flex; align-items: center; justify-content: center;
-            min-height: 0;
-            contain: strict; /* strongest containment — image changes don't affect rest */
-        }
-        .img-wrap img {
-            position: absolute; inset: 0; width: 100%; height: 100%;
-            object-fit: contain; opacity: 0;
-            /* GPU-accelerated fade — no layout repaint */
-            transition: opacity .35s ease;
-            /* Decode off main thread */
-            decoding: async;
-            /* Hint to browser about large image */
-            content-visibility: auto;
-        }
-        .img-wrap img.visible { opacity: 1; }
-
-        .img-loader {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
-            transition: opacity .25s;
-        }
-        .img-loader.hide { opacity: 0; pointer-events: none; }
-        .img-err {
-            position: absolute; inset: 0;
-            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
-            color: var(--muted); font-size: 13px; text-align: center; padding: 20px;
-        }
-        .img-err i { font-size: 32px; opacity: .3; }
-
-             /* Info bar — now at TOP of card */
-        .meme-info {
-            flex-shrink: 0; padding: 9px 13px 14px;
-            background: linear-gradient(to bottom,rgba(10,10,10,1),rgba(10,10,10,.92));
-            border-bottom: 1px solid var(--border);
-            /* Contain so scrolling feed doesn't repaint info bars of off-screen cards */
-            contain: layout style;
-        }
-        .meme-meta {
-            font-size: 10px; color: var(--muted);
-            display: flex; align-items: center; gap: 5px; flex-wrap: wrap; margin-bottom: 4px;
-        }
-        .meme-meta .dot { opacity: .3; }
-        .meme-title {
-            font-size: 13px; font-weight: 600; line-height: 1.4;
-            display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden;
-        }
-        /* Action bar — now BELOW image */
-        .meme-actions {
-            flex-shrink: 0; padding: 10px 13px 14px;
-            background: linear-gradient(to top,rgba(10,10,10,1),rgba(10,10,10,.92));
-            border-top: 1px solid var(--border);
-            display: flex; gap: 6px; flex-wrap: wrap;
-            contain: layout style;
-        }
-        .maction {
-            display: flex; align-items: center; gap: 4px; padding: 7px 13px;
-            border-radius: 20px; border: none; font-family: inherit;
-            font-size: 12px; font-weight: 600; cursor: pointer;
-            touch-action: manipulation;
-            /* GPU button press — no layout shift */
-            transition: transform .1s, opacity .15s;
-            /* Prevent text select on button tap */
-            -webkit-user-select: none; user-select: none;
-        }
-        .maction:active { transform: scale(.92); opacity: .85; }
-        .maction i { font-size: 11px; }
-        .maction.share { background: var(--accent); color: #fff; }
-        .maction.share.sent { background: var(--green); pointer-events: none; }
-        .maction.cmt  { background: var(--card); color: var(--fg); border: 1px solid var(--border); }
-        .maction.save { background: var(--card); color: var(--fg); border: 1px solid var(--border); }
-        .maction.save.saved { color: var(--accent2); border-color: var(--accent2); }
-
-        .feed-state {
-            height: 100%; flex-shrink: 0; scroll-snap-align: start;
-            display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 12px;
-            padding: 30px; color: var(--muted); font-size: 14px; text-align: center;
-        }
-        .feed-state i { font-size: 38px; opacity: .22; }
-        .retry-btn {
-            margin-top: 4px; padding: 9px 22px; background: var(--accent); color: #fff;
-            border: none; border-radius: 20px; font-family: inherit;
-            font-size: 13px; font-weight: 700; cursor: pointer;
-            touch-action: manipulation;
-        }
-
-        /* Infinite scroll sentinel */
-        .sentinel {
-            flex-shrink: 0; height: 60px;
-            display: flex; align-items: center; justify-content: center;
-            contain: strict;
-        }
-
-        /* ── Spinner ── */
-        .spin {
-            width: 28px; height: 28px;
-            border: 3px solid #282828; border-top-color: var(--accent);
-            border-radius: 50%;
-            /* transform-based spin — compositor only, zero layout cost */
-            animation: spin .7s linear infinite;
-            will-change: transform;
-        }
-        .spin.lg { width: 40px; height: 40px; border-width: 4px; }
-        @keyframes spin { to { transform: rotate(360deg); } }
-
-        /* ════════════════════════════════
-           ADD SUBREDDIT MODAL
-        ════════════════════════════════ */
-        .modal-bg {
-            position: fixed; inset: 0; z-index: 800; background: rgba(0,0,0,.6);
-            display: flex; align-items: flex-end; justify-content: center;
-            opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
-        }
-        .modal-bg.on { opacity: 1; visibility: visible; }
-        .modal {
-            background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0;
-            width: 100%; padding: 18px 16px 32px;
-            transform: translateY(20px);
-            transition: transform .3s cubic-bezier(.32,.72,0,1);
-            /* Safe area for Android gesture nav */
-            padding-bottom: max(32px, env(safe-area-inset-bottom));
-        }
-        .modal-bg.on .modal { transform: translateY(0); }
-        .modal-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-        .modal-head h3 { font-size: 15px; font-weight: 700; }
-        .modal-close {
-            width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: none;
-            color: var(--fg); cursor: pointer; touch-action: manipulation;
-            display: flex; align-items: center; justify-content: center; font-size: 13px;
-        }
-        .modal-row { display: flex; gap: 8px; margin-bottom: 14px; }
-        .modal-row input {
-            flex: 1; padding: 11px 13px; background: var(--card); border: 1px solid var(--border);
-            border-radius: var(--radius-sm); color: var(--fg); font-family: inherit;
-            font-size: 16px; outline: none; transition: border-color .2s;
-            -webkit-user-select: text; user-select: text;
-        }
-        .modal-row input:focus { border-color: var(--accent); }
-        .modal-row input::placeholder { color: var(--muted); }
-        .modal-row button {
-            padding: 11px 16px; background: var(--accent); color: #fff; border: none;
-            border-radius: var(--radius-sm); font-family: inherit;
-            font-size: 13px; font-weight: 700; cursor: pointer; touch-action: manipulation;
-        }
-        .modal-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .5px; margin-bottom: 7px; }
-        .pop-chips { display: flex; flex-wrap: wrap; gap: 6px; }
-        .pop-chip {
-            padding: 5px 11px; border-radius: 14px; background: var(--card);
-            border: 1px solid var(--border); font-size: 12px; font-weight: 600; color: var(--muted);
-            cursor: pointer; touch-action: manipulation; transition: all .15s;
-        }
-        .pop-chip:active { border-color: var(--accent); color: var(--accent); background: var(--accent-dim); }
-
-        /* ════════════════════════════════
-           CHAT
-        ════════════════════════════════ */
-        .chat-msgs {
-            flex: 1; overflow-y: auto;
-            /* Standard Android scroll */
-            overscroll-behavior-y: contain;
-            padding: 10px 12px;
-            display: flex; flex-direction: column; gap: 5px; min-height: 0;
-            will-change: scroll-position;
-        }
-        .chat-msgs::-webkit-scrollbar { width: 3px; }
-        .chat-msgs::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
-        .chat-empty {
-            flex: 1; display: flex; flex-direction: column;
-            align-items: center; justify-content: center; gap: 8px;
-            color: var(--muted); font-size: 13px;
-        }
-        .chat-empty i { font-size: 36px; opacity: .2; }
-
-        .msg { max-width: 82%; display: flex; flex-direction: column; animation: mup .2s ease; }
-        @keyframes mup { from{opacity:0;transform:translateY(5px)} to{opacity:1;transform:translateY(0)} }
-        .msg.in { align-self: flex-start; }
-        .msg.out { align-self: flex-end; }
-        .msg-bubble { padding: 8px 12px; border-radius: 14px; font-size: 13px; line-height: 1.5; }
-        .msg.in  .msg-bubble { background: var(--card); border-bottom-left-radius: 4px; }
-        .msg.out .msg-bubble { background: var(--accent); color: #fff; border-bottom-right-radius: 4px; }
-        .msg-who { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .4px; margin-bottom: 3px; padding: 0 2px; }
-        .msg.in  .msg-who { color: var(--accent); }
-        .msg.out .msg-who { color: rgba(255,255,255,.5); text-align: right; }
-        .msg-meme-img { width: 100%; max-width: 200px; border-radius: 10px; margin-top: 5px; display: block; }
-        .msg-meme-cap { font-size: 11px; margin-top: 3px; opacity: .75; }
-        .msg-ts { font-size: 9px; opacity: .35; margin-top: 3px; padding: 0 2px; }
-        .msg.out .msg-ts { text-align: right; }
-
-        .chat-bar {
-            display: flex; align-items: center; gap: 7px; padding: 7px 10px;
-            background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0;
-            /* Safe area for Android nav bar */
-            padding-bottom: max(7px, env(safe-area-inset-bottom));
-        }
-        .chat-bar input {
-            flex: 1; padding: 10px 14px; background: var(--card); border: 1px solid var(--border);
-            border-radius: 22px; color: var(--fg); font-family: inherit;
-            font-size: 16px; outline: none; transition: border-color .2s;
-            -webkit-user-select: text; user-select: text;
-        }
-        .chat-bar input:focus { border-color: var(--accent); }
-        .chat-bar input::placeholder { color: var(--muted); }
-        .send-btn {
-            width: 40px; height: 40px; border-radius: 50%; background: var(--accent); border: none;
-            color: #fff; display: flex; align-items: center; justify-content: center;
-            cursor: pointer; flex-shrink: 0; touch-action: manipulation;
-            transition: transform .1s;
-        }
-        .send-btn:active { transform: scale(.9); }
-        .send-btn i { font-size: 15px; }
-
-        /* ════════════════════════════════
-           COMMENTS SHEET
-        ════════════════════════════════ */
-        .sheet-bg {
-            position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,.6);
-            opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s;
-        }
-        .sheet-bg.on { opacity: 1; visibility: visible; }
-
-        .sheet {
-            position: fixed; bottom: 0; left: 0; right: 0; z-index: 901;
-            background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0;
-            height: 80vh;
-            display: flex; flex-direction: column;
-            /* GPU layer — composited slide */
-            will-change: transform;
-            transform: translateY(100%);
-            transition: transform .32s cubic-bezier(.32,.72,0,1);
-            /* Safe area for Android gesture nav */
-            padding-bottom: env(safe-area-inset-bottom);
-        }
-        .sheet.on { transform: translateY(0); }
-
-        .sheet-pill {
-            width: 36px; height: 4px; background: #333; border-radius: 3px;
-            margin: 8px auto 0; flex-shrink: 0;
-        }
-        .sheet-head {
-            display: flex; align-items: center; justify-content: space-between;
-            padding: 9px 16px 11px; border-bottom: 1px solid var(--border); flex-shrink: 0;
-        }
-        .sheet-head h3 { font-size: 15px; font-weight: 700; }
-        .sheet-count { font-size: 11px; color: var(--muted); margin-left: 5px; }
-        .sheet-x {
-            width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: none;
-            color: var(--fg); display: flex; align-items: center; justify-content: center;
-            cursor: pointer; touch-action: manipulation; font-size: 13px;
-        }
-
-        /* The key scroll container for comments */
-        .sheet-body {
-            flex: 1;
-            overflow-y: auto;
-            /* Standard Android momentum — not -webkit-overflow-scrolling */
-            overscroll-behavior-y: contain;
-            padding: 10px 13px 28px;
-            display: flex; flex-direction: column; gap: 7px;
-            /* Pre-allocate scroll layer */
-            will-change: scroll-position;
-        }
-        .sheet-body::-webkit-scrollbar { width: 3px; }
-        .sheet-body::-webkit-scrollbar-track { background: transparent; }
-        .sheet-body::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
-
-        /* Comment card */
-        .cmt-card {
-            background: var(--card); border-radius: var(--radius-sm);
-            padding: 10px 12px;
-            animation: mup .18s ease;
-            /* Contain each comment — prevents repaints from spreading */
-            contain: layout style;
-        }
-        .cmt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
-        .cmt-author { font-size: 11px; font-weight: 700; color: var(--accent); }
-        .cmt-score { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); font-weight: 600; }
-        .cmt-score i { font-size: 9px; }
-        .cmt-body { font-size: 13px; line-height: 1.55; word-break: break-word; color: var(--fg); }
-        .cmt-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
-
-        .sheet-empty {
-            text-align: center; color: var(--muted); font-size: 13px; padding: 28px 16px;
-            display: flex; flex-direction: column; align-items: center; gap: 8px;
-        }
-        .sheet-empty i { font-size: 32px; opacity: .2; }
-        .sheet-loading {
-            display: flex; flex-direction: column; align-items: center;
-            justify-content: center; gap: 10px; padding: 28px;
-            color: var(--muted); font-size: 13px;
-        }
-    </style>
+/* Rich meme card in chat */
+.msg-meme-card { width: 260px; max-width: 82vw; background: var(--card); border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); display: flex; flex-direction: column; }
+.msg-meme-info { padding: 8px 10px 6px; background: var(--bg2); border-bottom: 1px solid var(--border); }
+.msg-meme-meta { font-size: 9px; color: var(--muted); display: flex; align-items: center; gap: 4px; margin-bottom: 3px; flex-wrap: wrap; }
+.msg-meme-meta .dot { opacity: .3; }
+.msg-meme-title { font-size: 11px; font-weight: 600; line-height: 1.35; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.msg-meme-img-wrap { position: relative; width: 100%; padding-top: 56.25%; background: #0d0d0d; overflow: hidden; }
+.msg-meme-img-wrap img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.msg-meme-footer { display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: var(--bg2); border-top: 1px solid var(--border); }
+.msg-meme-stat { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); font-weight: 600; }
+.msg-meme-stat i { font-size: 9px; }
+.chat-bar { display: flex; align-items: center; gap: 7px; padding: 7px 10px; background: var(--bg); border-top: 1px solid var(--border); flex-shrink: 0; padding-bottom: max(7px, env(safe-area-inset-bottom)); }
+.chat-bar input { flex: 1; padding: 10px 14px; background: var(--card); border: 1px solid var(--border); border-radius: 22px; color: var(--fg); font-family: inherit; font-size: 16px; outline: none; transition: border-color .2s; -webkit-user-select: text; user-select: text; }
+.chat-bar input:focus { border-color: var(--accent); }
+.chat-bar input::placeholder { color: var(--muted); }
+.send-btn { width: 40px; height: 40px; border-radius: 50%; background: var(--accent); border: none; color: #fff; display: flex; align-items: center; justify-content: center; cursor: pointer; flex-shrink: 0; touch-action: manipulation; transition: transform .1s; }
+.send-btn:active { transform: scale(.9); }
+.send-btn i { font-size: 15px; }
+.sheet-bg { position: fixed; inset: 0; z-index: 900; background: rgba(0,0,0,.6); opacity: 0; visibility: hidden; transition: opacity .25s, visibility .25s; }
+.sheet-bg.on { opacity: 1; visibility: visible; }
+.sheet { position: fixed; bottom: 0; left: 0; right: 0; z-index: 901; background: var(--bg2); border-radius: var(--radius) var(--radius) 0 0; height: 80vh; display: flex; flex-direction: column; will-change: transform; transform: translateY(100%); transition: transform .32s cubic-bezier(.32,.72,0,1); padding-bottom: env(safe-area-inset-bottom); }
+.sheet.on { transform: translateY(0); }
+.sheet-pill { width: 36px; height: 4px; background: #333; border-radius: 3px; margin: 8px auto 0; flex-shrink: 0; }
+.sheet-head { display: flex; align-items: center; justify-content: space-between; padding: 9px 16px 11px; border-bottom: 1px solid var(--border); flex-shrink: 0; }
+.sheet-head h3 { font-size: 15px; font-weight: 700; }
+.sheet-count { font-size: 11px; color: var(--muted); margin-left: 5px; }
+.sheet-x { width: 30px; height: 30px; border-radius: 50%; background: var(--card); border: none; color: var(--fg); display: flex; align-items: center; justify-content: center; cursor: pointer; touch-action: manipulation; font-size: 13px; }
+.sheet-body { flex: 1; overflow-y: auto; overscroll-behavior-y: contain; padding: 10px 13px 28px; display: flex; flex-direction: column; gap: 7px; will-change: scroll-position; }
+.sheet-body::-webkit-scrollbar { width: 3px; }
+.sheet-body::-webkit-scrollbar-track { background: transparent; }
+.sheet-body::-webkit-scrollbar-thumb { background: #333; border-radius: 3px; }
+.cmt-card { background: var(--card); border-radius: var(--radius-sm); padding: 10px 12px; animation: mup .18s ease; contain: layout style; }
+.cmt-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 5px; }
+.cmt-author { font-size: 11px; font-weight: 700; color: var(--accent); }
+.cmt-score { display: flex; align-items: center; gap: 3px; font-size: 10px; color: var(--muted); font-weight: 600; }
+.cmt-score i { font-size: 9px; }
+.cmt-body { font-size: 13px; line-height: 1.55; word-break: break-word; color: var(--fg); }
+.cmt-time { font-size: 10px; color: var(--muted); margin-top: 4px; }
+.sheet-empty { text-align: center; color: var(--muted); font-size: 13px; padding: 28px 16px; display: flex; flex-direction: column; align-items: center; gap: 8px; }
+.sheet-empty i { font-size: 32px; opacity: .2; }
+.sheet-loading { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px; padding: 28px; color: var(--muted); font-size: 13px; }
+</style>
 </head>
 <body>
-
 <div class="ambient" aria-hidden="true">
-    <div class="orb orb-1"></div>
-    <div class="orb orb-2"></div>
+<div class="orb orb-1"></div>
+<div class="orb orb-2"></div>
 </div>
 <div id="toasts" aria-live="polite"></div>
 
 <!-- Username overlay -->
 <div class="uname-overlay" id="uOverlay">
-    <div class="uname-logo">MemeVault</div>
-    <p class="uname-sub">Your infinite meme dimension</p>
-    <div class="uname-box">
-        <input id="uInput" type="text" placeholder="Choose a username..."
-               maxlength="24" autocomplete="off" autocorrect="off"
-               autocapitalize="off" spellcheck="false">
-        <button class="btn-primary" id="uGo">Enter the Vault →</button>
-    </div>
+<div class="uname-logo">MemeVault</div>
+<p class="uname-sub">Your infinite meme dimension</p>
+<div class="uname-box">
+<input id="uInput" type="text" placeholder="Choose a username..."
+maxlength="24" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<button class="btn-primary" id="uGo">Enter the Vault →</button>
+</div>
 </div>
 
 <!-- Add subreddit modal -->
 <div class="modal-bg" id="addSubModal">
-    <div class="modal">
-        <div class="modal-head">
-            <h3><i class="fa-solid fa-plus" style="color:var(--accent);margin-right:6px"></i>Add Subreddit</h3>
-            <button class="modal-close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-        <div class="modal-row">
-            <input id="subInput" type="text" placeholder="e.g. funny, gaming..."
-                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button id="subAddBtn">Add</button>
-        </div>
-        <div class="modal-label">Popular</div>
-        <div class="pop-chips">
-            <span class="pop-chip" data-s="funny">r/funny</span>
-            <span class="pop-chip" data-s="gaming">r/gaming</span>
-            <span class="pop-chip" data-s="AdviceAnimals">r/AdviceAnimals</span>
-            <span class="pop-chip" data-s="PrequelMemes">r/PrequelMemes</span>
-            <span class="pop-chip" data-s="shitposting">r/shitposting</span>
-            <span class="pop-chip" data-s="surrealmemes">r/surrealmemes</span>
-            <span class="pop-chip" data-s="technicallythetruth">r/TechTruth</span>
-            <span class="pop-chip" data-s="lotrmemes">r/lotrmemes</span>
-            <span class="pop-chip" data-s="ProgrammerHumor">r/ProgrammerHumor</span>
-            <span class="pop-chip" data-s="cursedcomments">r/cursedcomments</span>
-            <span class="pop-chip" data-s="teenagers">r/teenagers</span>
-            <span class="pop-chip" data-s="me_irl">r/me_irl</span>
-        </div>
-    </div>
+<div class="modal">
+<div class="modal-head">
+<h3><i class="fa-solid fa-plus" style="color:var(--accent);margin-right:6px"></i>Add Subreddit</h3>
+<button class="modal-close" id="closeModal"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="modal-row">
+<input id="subInput" type="text" placeholder="e.g. funny, gaming..."
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<button id="subAddBtn">Add</button>
+</div>
+<div class="modal-label">Popular</div>
+<div class="pop-chips">
+<span class="pop-chip" data-s="funny">r/funny</span>
+<span class="pop-chip" data-s="gaming">r/gaming</span>
+<span class="pop-chip" data-s="AdviceAnimals">r/AdviceAnimals</span>
+<span class="pop-chip" data-s="PrequelMemes">r/PrequelMemes</span>
+<span class="pop-chip" data-s="shitposting">r/shitposting</span>
+<span class="pop-chip" data-s="surrealmemes">r/surrealmemes</span>
+<span class="pop-chip" data-s="technicallythetruth">r/TechTruth</span>
+<span class="pop-chip" data-s="lotrmemes">r/lotrmemes</span>
+<span class="pop-chip" data-s="ProgrammerHumor">r/ProgrammerHumor</span>
+<span class="pop-chip" data-s="cursedcomments">r/cursedcomments</span>
+<span class="pop-chip" data-s="teenagers">r/teenagers</span>
+<span class="pop-chip" data-s="me_irl">r/me_irl</span>
+</div>
+</div>
 </div>
 
 <!-- Comments sheet -->
 <div class="sheet-bg" id="sheetBg"></div>
 <div class="sheet" id="sheet" role="dialog" aria-label="Comments">
-    <div class="sheet-pill"></div>
-    <div class="sheet-head">
-        <div style="display:flex;align-items:center">
-            <h3>Comments</h3>
-            <span class="sheet-count" id="sheetCount"></span>
-        </div>
-        <button class="sheet-x" id="sheetX"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="sheet-body" id="sheetBody">
-        <div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>
-    </div>
+<div class="sheet-pill"></div>
+<div class="sheet-head">
+<div style="display:flex;align-items:center">
+<h3>Comments</h3>
+<span class="sheet-count" id="sheetCount"></span>
+</div>
+<button class="sheet-x" id="sheetX"><i class="fa-solid fa-xmark"></i></button>
+</div>
+<div class="sheet-body" id="sheetBody">
+<div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>
+</div>
 </div>
 
 <!-- Search Overlay -->
 <div class="search-overlay" id="searchOverlay">
-    <div class="search-header">
-        <button class="search-back" id="searchBack"><i class="fa-solid fa-arrow-left"></i></button>
-        <div class="search-input-wrap">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <input id="searchInput" type="search" placeholder="Search memes..."
-                   autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
-            <button class="search-clear-btn" id="searchClearBtn"><i class="fa-solid fa-xmark"></i></button>
-        </div>
-    </div>
-    <div class="search-scroll" id="searchScroll"></div>
+<div class="search-header">
+<button class="search-back" id="searchBack"><i class="fa-solid fa-arrow-left"></i></button>
+<div class="search-input-wrap">
+<i class="fa-solid fa-magnifying-glass"></i>
+<input id="searchInput" type="search" placeholder="Search memes..."
+autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false">
+<button class="search-clear-btn" id="searchClearBtn"><i class="fa-solid fa-xmark"></i></button>
+</div>
+</div>
+<div class="search-scroll" id="searchScroll"></div>
 </div>
 
 <!-- App -->
 <div class="app">
-    <div class="panels">
+<div class="panels">
 
-        <!-- FEED -->
-        <section class="panel on" id="p-feed">
-            <div class="feed-top-bar">
-                <div class="subs-row" id="subsRow">
-                    <button class="add-sub-btn" id="openAddSub"><i class="fa-solid fa-plus"></i></button>
-                </div>
-            </div>
-            <div class="feed-scroll" id="feedScroll">
-                <div class="feed-state" id="feedInitState">
-                    <div class="spin lg"></div>
-                    <span>Loading memes...</span>
-                </div>
-            </div>
-        </section>
-
-        <!-- CHAT -->
-        <section class="panel" id="p-chat">
-            <div class="chat-msgs" id="chatMsgs">
-                <div class="chat-empty" id="chatEmpty">
-                    <i class="fa-regular fa-comment-dots"></i>
-                    <span>No messages yet — be the first!</span>
-                </div>
-            </div>
-            <div class="chat-bar">
-                <input id="chatIn" type="text" placeholder="Message the chat..."
-                       maxlength="500" autocomplete="off" autocorrect="off" spellcheck="false">
-                <button class="send-btn" id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </section>
-
+  <!-- FEED -->
+  <section class="panel on" id="p-feed">
+    <div class="feed-top-bar">
+      <div class="subs-row" id="subsRow">
+        <button class="add-sub-btn" id="openAddSub"><i class="fa-solid fa-plus"></i></button>
+      </div>
     </div>
+    <div class="feed-scroll" id="feedScroll">
+      <div class="feed-state" id="feedInitState">
+        <div class="spin lg"></div>
+        <span>Loading memes...</span>
+      </div>
+    </div>
+  </section>
 
-    <!-- Bottom Nav -->
-    <nav class="bottomnav">
-        <button class="nav-btn on" id="feedNavBtn" data-tab="feed">
-            <i class="fa-solid fa-fire-flame-curved"></i>
-            <span>Feed</span>
-        </button>
-        <button class="nav-btn" id="openSearchBtn">
-            <i class="fa-solid fa-magnifying-glass"></i>
-            <span>Search</span>
-        </button>
-        <button class="nav-btn" data-tab="chat">
-            <i class="fa-solid fa-comments"></i>
-            <span>Chat</span>
-        </button>
-    </nav>
+  <!-- CHAT -->
+  <section class="panel" id="p-chat">
+    <div class="chat-header">
+      <div class="chat-header-top">
+        <div class="chat-header-title">
+          <i class="fa-solid fa-comments"></i>
+          MemeVault Chat
+        </div>
+      </div>
+      <div class="online-strip" id="onlineStrip">
+        <div class="online-count" id="onlineCount">0 online</div>
+      </div>
+    </div>
+    <div class="chat-msgs" id="chatMsgs">
+      <div class="chat-empty" id="chatEmpty">
+        <i class="fa-regular fa-comment-dots"></i>
+        <span>No messages yet — be the first!</span>
+      </div>
+    </div>
+    <div class="new-msg-banner hidden" id="newMsgBanner">
+      <i class="fa-solid fa-arrow-down"></i>
+      <span id="newMsgText">New messages</span>
+    </div>
+    <div class="chat-bar">
+      <input id="chatIn" type="text" placeholder="Message the chat..."
+        maxlength="500" autocomplete="off" autocorrect="off" spellcheck="false">
+      <button class="send-btn" id="chatSend"><i class="fa-solid fa-paper-plane"></i></button>
+    </div>
+  </section>
+
+</div>
+
+<!-- Bottom Nav -->
+<nav class="bottomnav">
+  <button class="nav-btn on" id="feedNavBtn" data-tab="feed">
+    <i class="fa-solid fa-fire-flame-curved"></i>
+    <span>Feed</span>
+  </button>
+  <button class="nav-btn" id="openSearchBtn">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span>Search</span>
+  </button>
+  <button class="nav-btn" id="chatNavBtn" data-tab="chat">
+    <i class="fa-solid fa-comments"></i>
+    <span>Chat</span>
+  </button>
+</nav>
 </div>
 
 <script type="module">
-import { initializeApp }   from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
-import { getDatabase, ref, push, onChildAdded, query, limitToLast }
-    from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
+import { initializeApp }    from "https://www.gstatic.com/firebasejs/12.12.1/firebase-app.js";
+import { getDatabase, ref, push, onChildAdded, onValue, set, remove,
+         query, limitToLast, serverTimestamp, onDisconnect }
+  from "https://www.gstatic.com/firebasejs/12.12.1/firebase-database.js";
 
-/* ══════════════════════════════════════════
-   FIREBASE
-══════════════════════════════════════════ */
-const fbApp = initializeApp({
-    apiKey:            "AIzaSyCznGDHY_bnbCHu-VQEO1eWpF_Xlpd6Hk8",
-    authDomain:        "notification-498bf.firebaseapp.com",
-    databaseURL:       "https://notification-498bf-default-rtdb.firebaseio.com",
-    projectId:         "notification-498bf",
-    storageBucket:     "notification-498bf.firebasestorage.app",
-    messagingSenderId: "235621219556",
-    appId:             "1:235621219556:web:b013c18725310a9f4340f1"
-});
-const db      = getDatabase(fbApp);
+/* ── FIREBASE (your new config) ── */
+const firebaseConfig = {
+  apiKey:            "AIzaSyCuyvT-xKIGMJyi3LTkoF5VLT1bRmcU0Rc",
+  authDomain:        "memme-e5686.firebaseapp.com",
+  databaseURL:       "https://memme-e5686-default-rtdb.firebaseio.com",
+  projectId:         "memme-e5686",
+  storageBucket:     "memme-e5686.firebasestorage.app",
+  messagingSenderId: "444149549078",
+  appId:             "1:444149549078:web:50677ecdce29852ab94d37"
+};
+const fbApp  = initializeApp(firebaseConfig);
+const db     = getDatabase(fbApp);
 const chatRef = ref(db, "memeVault_chat");
 
-/* ══════════════════════════════════════════
-   STATE
-══════════════════════════════════════════ */
-let username   = localStorage.getItem("mv_user") || "";
-let seenIds    = new Set(JSON.parse(localStorage.getItem("mv_seen6") || "[]"));
-let saved      = new Set(JSON.parse(localStorage.getItem("mv_saved") || "[]"));
-let subreddits = JSON.parse(localStorage.getItem("mv_subs") || "null")
-                 || ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
+/* ── STATE ── */
+let username      = localStorage.getItem("mv_user") || "";
+let seenIds       = new Set(JSON.parse(localStorage.getItem("mv_seen6") || "[]"));
+let saved         = new Set(JSON.parse(localStorage.getItem("mv_saved")  || "[]"));
+let subreddits    = JSON.parse(localStorage.getItem("mv_subs") || "null")
+                    || ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
+const feedCursors = {};
+let feedRR = 0, feedFetching = false, currentSub = "all";
+let searchQuery = "", searchAfter = "", searchFetching = false, searchExhausted = false;
+let unreadCount = 0, chatOpen = false;
+let onlineUsers = {}, presenceRef = null;
+let firstLoad   = true;
 
-const feedCursors  = {};
-let   feedRR       = 0;
-let   feedFetching = false;
-let   currentSub   = "all";
-
-let searchQuery     = "";
-let searchAfter     = "";
-let searchFetching  = false;
-let searchExhausted = false;
-let searchTimer     = null;
-
-/* ══════════════════════════════════════════
-   DOM — cached once, never re-queried
-══════════════════════════════════════════ */
+/* ── DOM ── */
 const $uOverlay     = document.getElementById("uOverlay");
 const $uInput       = document.getElementById("uInput");
 const $uGo          = document.getElementById("uGo");
@@ -827,653 +441,514 @@ const $searchBack   = document.getElementById("searchBack");
 const $searchClear  = document.getElementById("searchClearBtn");
 const $openSearch   = document.getElementById("openSearchBtn");
 const $feedNavBtn   = document.getElementById("feedNavBtn");
+const $chatNavBtn   = document.getElementById("chatNavBtn");
 const $pfeed        = document.getElementById("p-feed");
+const $onlineStrip  = document.getElementById("onlineStrip");
+const $onlineCount  = document.getElementById("onlineCount");
+const $newMsgBanner = document.getElementById("newMsgBanner");
+const $newMsgText   = document.getElementById("newMsgText");
 
-/* ══════════════════════════════════════════
-   HELPERS
-══════════════════════════════════════════ */
+/* ── HELPERS ── */
 function esc(s) {
-    return String(s ?? "")
-        .replace(/&/g,"&amp;").replace(/</g,"&lt;")
-        .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
+  return String(s ?? "")
+    .replace(/&/g,"&amp;").replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;").replace(/"/g,"&quot;");
 }
-
-/* Throttle — used for scroll events */
 function throttle(fn, ms) {
-    let last = 0;
-    return (...args) => {
-        const now = Date.now();
-        if (now - last >= ms) { last = now; fn(...args); }
-    };
+  let last=0; return (...a)=>{ const n=Date.now(); if(n-last>=ms){last=n;fn(...a);} };
 }
-
-/* Debounce — used for search input */
 function debounce(fn, ms) {
-    let t;
-    return (...args) => { clearTimeout(t); t = setTimeout(() => fn(...args), ms); };
+  let t; return (...a)=>{ clearTimeout(t); t=setTimeout(()=>fn(...a),ms); };
 }
-
-function toast(msg, type = "") {
-    const el = document.createElement("div");
-    el.className = "toast " + type;
-    el.textContent = msg;
-    $toasts.appendChild(el);
-    setTimeout(() => el.remove(), 2500);
+function toast(msg, type="") {
+  const el=document.createElement("div");
+  el.className="toast "+type; el.textContent=msg;
+  $toasts.appendChild(el); setTimeout(()=>el.remove(),2500);
 }
-
 function saveSeen() {
-    const a = [...seenIds];
-    if (a.length > 2000) seenIds = new Set(a.slice(-2000));
-    localStorage.setItem("mv_seen6", JSON.stringify([...seenIds]));
+  const a=[...seenIds]; if(a.length>2000) seenIds=new Set(a.slice(-2000));
+  localStorage.setItem("mv_seen6",JSON.stringify([...seenIds]));
 }
-function saveSubs()  { localStorage.setItem("mv_subs",  JSON.stringify(subreddits)); }
-function saveSaved() { localStorage.setItem("mv_saved", JSON.stringify([...saved])); }
-
-function fmtN(n) { return n >= 1000 ? (n/1000).toFixed(1)+"k" : String(n||0); }
-function fmtT(ts){ return ts ? new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}) : ""; }
+function saveSubs()  { localStorage.setItem("mv_subs",JSON.stringify(subreddits)); }
+function saveSaved() { localStorage.setItem("mv_saved",JSON.stringify([...saved])); }
+function fmtN(n)  { return n>=1000?(n/1000).toFixed(1)+"k":String(n||0); }
+function fmtT(ts) { return ts?new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):""; }
 function relTime(utc) {
-    if (!utc) return "";
-    const s = Math.floor(Date.now()/1000 - utc);
-    if (s < 60)    return "just now";
-    if (s < 3600)  return Math.floor(s/60)   + "m ago";
-    if (s < 86400) return Math.floor(s/3600) + "h ago";
-    return Math.floor(s/86400) + "d ago";
+  if(!utc) return "";
+  const s=Math.floor(Date.now()/1000-utc);
+  if(s<60) return "just now";
+  if(s<3600) return Math.floor(s/60)+"m ago";
+  if(s<86400) return Math.floor(s/3600)+"h ago";
+  return Math.floor(s/86400)+"d ago";
 }
 
-/* ══════════════════════════════════════════
-   REDDIT FETCH — proxy waterfall
-══════════════════════════════════════════ */
+/* ── PRESENCE ── */
+function initPresence() {
+  if (!username) return;
+  const key = username.replace(/[.#$[\]]/g,"_");
+  presenceRef = ref(db, `memeVault_presence/${key}`);
+  set(presenceRef, { username, online:true, lastSeen: serverTimestamp() });
+  onDisconnect(presenceRef).remove();
+  onValue(ref(db,"memeVault_presence"), snap => {
+    onlineUsers = {};
+    snap.forEach(c => { const d=c.val(); if(d?.username) onlineUsers[d.username]=d; });
+    renderOnlineUsers();
+  });
+}
+function renderOnlineUsers() {
+  const users = Object.values(onlineUsers);
+  $onlineCount.textContent = `${users.length} online`;
+  $onlineStrip.querySelectorAll(".online-user-wrap").forEach(e=>e.remove());
+  const frag = document.createDocumentFragment();
+  users.slice(0,10).forEach(u => {
+    const wrap=document.createElement("div"); wrap.className="online-user-wrap";
+    const av=document.createElement("div"); av.className="online-avatar";
+    av.textContent=u.username.charAt(0).toUpperCase();
+    const nm=document.createElement("div"); nm.className="online-name";
+    nm.textContent=u.username;
+    wrap.appendChild(av); wrap.appendChild(nm); frag.appendChild(wrap);
+  });
+  $onlineStrip.appendChild(frag);
+}
+
+/* ── NEW MESSAGE INDICATOR ── */
+function isAtBottom() {
+  return $chatMsgs.scrollHeight - $chatMsgs.scrollTop - $chatMsgs.clientHeight < 60;
+}
+$chatMsgs.addEventListener("scroll", throttle(()=>{
+  if(isAtBottom()){ hideBanner(); unreadCount=0; clearNavBadge(); }
+},100));
+function showBanner(n) {
+  $newMsgText.textContent = n===1?"1 new message":`${n} new messages`;
+  $newMsgBanner.classList.remove("hidden");
+}
+function hideBanner() { $newMsgBanner.classList.add("hidden"); }
+$newMsgBanner.addEventListener("click",()=>{
+  $chatMsgs.scrollTo({top:$chatMsgs.scrollHeight,behavior:"smooth"});
+  hideBanner(); unreadCount=0; clearNavBadge();
+});
+function setNavBadge(n) {
+  let b=$chatNavBtn.querySelector(".nav-badge");
+  if(!b){ b=document.createElement("span"); b.className="nav-badge"; $chatNavBtn.appendChild(b); }
+  b.textContent=n>99?"99+":String(n);
+}
+function clearNavBadge() {
+  const b=$chatNavBtn.querySelector(".nav-badge"); if(b) b.remove();
+}
+
+/* ── REDDIT FETCH ── */
 const PROXIES = [
-    u => u,
-    u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-    u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>u,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
 ];
-let proxyOK = 0;
-
+let proxyOK=0;
 async function redditFetch(url) {
-    for (let i = proxyOK; i < PROXIES.length; i++) {
-        try {
-            const res = await fetch(PROXIES[i](url), {
-                headers: { Accept: "application/json" },
-                signal:  AbortSignal.timeout(9000),
-            });
-            if (!res.ok) throw new Error("HTTP " + res.status);
-            const json = await res.json();
-            proxyOK = i;
-            return json;
-        } catch(e) {
-            console.warn(`[proxy ${i}] ${e.message}`);
-            if (i === PROXIES.length - 1) throw e;
-        }
-    }
+  for(let i=proxyOK;i<PROXIES.length;i++){
+    try{
+      const res=await fetch(PROXIES[i](url),{headers:{Accept:"application/json"},signal:AbortSignal.timeout(9000)});
+      if(!res.ok) throw new Error("HTTP "+res.status);
+      const json=await res.json(); proxyOK=i; return json;
+    }catch(e){ console.warn(`[proxy ${i}] ${e.message}`); if(i===PROXIES.length-1) throw e; }
+  }
 }
-
 function resolveImg(d) {
-    const prev = d.preview?.images?.[0]?.source?.url;
-    if (prev?.startsWith("http")) return prev;
-    const direct = d.url_overridden_by_dest || d.url || "";
-    if (/\.(jpg|jpeg|png|gif|webp)/i.test(direct)) return direct;
-    return null;
+  const prev=d.preview?.images?.[0]?.source?.url;
+  if(prev?.startsWith("http")) return prev;
+  const direct=d.url_overridden_by_dest||d.url||"";
+  if(/\.(jpg|jpeg|png|gif|webp)/i.test(direct)) return direct;
+  return null;
 }
-function isValid(d) {
-    return d && !d.over_18 && !d.is_video && !d.stickied && !!resolveImg(d);
-}
-function toMeme(d) {
-    return {
-        id:        d.id,
-        title:     d.title        || "Untitled",
-        imageUrl:  resolveImg(d),
-        author:    d.author       || "[deleted]",
-        sub:       d.subreddit    || "",
-        score:     d.score        || 0,
-        numCmt:    d.num_comments || 0,
-        permalink: d.permalink    || "",
-    };
+function isValid(d){ return d&&!d.over_18&&!d.is_video&&!d.stickied&&!!resolveImg(d); }
+function toMeme(d){
+  return { id:d.id, title:d.title||"Untitled", imageUrl:resolveImg(d),
+    author:d.author||"[deleted]", sub:d.subreddit||"",
+    score:d.score||0, numCmt:d.num_comments||0, permalink:d.permalink||"" };
 }
 
-/* ══════════════════════════════════════════
-   USERNAME
-══════════════════════════════════════════ */
-function initUser() {
-    if (username) { $uOverlay.classList.add("gone"); start(); }
-    else { $uInput.focus(); }
+/* ── USERNAME ── */
+function initUser(){
+  if(username){ $uOverlay.classList.add("gone"); start(); }
+  else { $uInput.focus(); }
 }
-function submitUser() {
-    const v = $uInput.value.trim();
-    if (!v) { $uInput.style.borderColor="var(--red)"; setTimeout(()=>$uInput.style.borderColor="",1200); return; }
-    username = v;
-    localStorage.setItem("mv_user", username);
-    $uOverlay.classList.add("gone");
-    toast("Welcome, " + username + " 🔥", "ok");
-    start();
+function submitUser(){
+  const v=$uInput.value.trim();
+  if(!v){ $uInput.style.borderColor="var(--red)"; setTimeout(()=>$uInput.style.borderColor="",1200); return; }
+  username=v; localStorage.setItem("mv_user",username);
+  $uOverlay.classList.add("gone"); toast("Welcome, "+username+" 🔥","ok"); start();
 }
-$uGo.addEventListener("click", submitUser);
-$uInput.addEventListener("keydown", e => { if(e.key==="Enter") submitUser(); });
+$uGo.addEventListener("click",submitUser);
+$uInput.addEventListener("keydown",e=>{ if(e.key==="Enter") submitUser(); });
 
-/* ══════════════════════════════════════════
-   BOTTOM NAV
-══════════════════════════════════════════ */
-const $navBtns  = document.querySelectorAll(".nav-btn[data-tab]");
-const $panels   = document.querySelectorAll(".panel");
+/* ── BOTTOM NAV ── */
+const $navBtns = document.querySelectorAll(".nav-btn[data-tab]");
+const $panels  = document.querySelectorAll(".panel");
+$navBtns.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const tab=btn.dataset.tab;
+    if(tab==="feed"&&btn.classList.contains("on")){ refreshFeed(btn); return; }
+    document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("on"));
+    $panels.forEach(p=>p.classList.remove("on"));
+    btn.classList.add("on");
+    document.getElementById("p-"+tab).classList.add("on");
+    if(tab==="chat"){
+      chatOpen=true; unreadCount=0; clearNavBadge(); hideBanner();
+      requestAnimationFrame(()=>{ $chatMsgs.scrollTop=$chatMsgs.scrollHeight; });
+    } else { chatOpen=false; }
+  });
+});
+function refreshFeed(btn){
+  if(feedFetching) return;
+  btn.classList.add("refreshing");
+  btn.addEventListener("animationend",()=>btn.classList.remove("refreshing"),{once:true});
+  const flash=document.createElement("div"); flash.className="feed-refresh-flash";
+  $pfeed.appendChild(flash); flash.addEventListener("animationend",()=>flash.remove(),{once:true});
+  [...$feedScroll.querySelectorAll(".meme-card,.feed-state,.sentinel")].forEach(el=>el.remove());
+  Object.keys(feedCursors).forEach(k=>delete feedCursors[k]); feedRR=0;
+  toast("Feed refreshed 🔄","info"); ensureFeedSentinel(); fetchFeedBatch();
+}
+function switchToChat(){
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("on"));
+  $panels.forEach(p=>p.classList.remove("on"));
+  $chatNavBtn.classList.add("on");
+  document.getElementById("p-chat").classList.add("on");
+  chatOpen=true; unreadCount=0; clearNavBadge(); hideBanner();
+  requestAnimationFrame(()=>{ $chatMsgs.scrollTop=$chatMsgs.scrollHeight; });
+}
 
-$navBtns.forEach(btn => {
-    btn.addEventListener("click", () => {
-        const tab = btn.dataset.tab;
-        if (tab === "feed" && btn.classList.contains("on")) {
-            refreshFeed(btn); return;
-        }
-        $navBtns.forEach(b => b.classList.remove("on"));
-        document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("on"));
-        $panels.forEach(p => p.classList.remove("on"));
-        btn.classList.add("on");
-        document.getElementById("p-" + tab).classList.add("on");
-        if (tab === "chat") {
-            /* rAF — defer scroll until panel is painted */
-            requestAnimationFrame(() => { $chatMsgs.scrollTop = $chatMsgs.scrollHeight; });
-        }
+/* ── SUBREDDIT CHIPS ── */
+function renderChips(){
+  const frag=document.createDocumentFragment();
+  frag.appendChild(mkChip("All","all",false));
+  subreddits.forEach(s=>frag.appendChild(mkChip("r/"+s,s,subreddits.length>1)));
+  [...$subsRow.querySelectorAll(".sub-chip")].forEach(c=>c.remove());
+  $subsRow.insertBefore(frag,$openAddSub); syncChips();
+}
+function mkChip(label,val,removable){
+  const c=document.createElement("button"); c.className="sub-chip"; c.dataset.sub=val; c.textContent=label;
+  if(removable){
+    const rm=document.createElement("span"); rm.className="rm"; rm.textContent=" ×"; rm.title="Remove";
+    rm.addEventListener("click",e=>{ e.stopPropagation(); removeSub(val); });
+    c.appendChild(rm);
+  }
+  c.addEventListener("click",()=>filterSub(val)); return c;
+}
+function syncChips(){ $subsRow.querySelectorAll(".sub-chip").forEach(c=>c.classList.toggle("on",c.dataset.sub===currentSub)); }
+function filterSub(sub){
+  if(currentSub===sub) return; currentSub=sub; syncChips();
+  let hasVisible=false;
+  $feedScroll.querySelectorAll(".meme-card").forEach(c=>{
+    const show=sub==="all"||c.dataset.sub===sub;
+    c.style.display=show?"flex":"none"; if(show) hasVisible=true;
+  });
+  if(!hasVisible) fetchFeedBatch();
+}
+$openAddSub.addEventListener("click",()=>{ $addModal.classList.add("on"); $subInput.focus(); });
+$closeModal.addEventListener("click",closeAddModal);
+$addModal.addEventListener("click",e=>{ if(e.target===$addModal) closeAddModal(); });
+function closeAddModal(){ $addModal.classList.remove("on"); $subInput.value=""; }
+function addSub(raw){
+  const name=raw.trim().replace(/^r\//i,"").replace(/\s+/g,"");
+  if(!name) return;
+  if(subreddits.some(s=>s.toLowerCase()===name.toLowerCase())){ toast("Already added","info"); return; }
+  subreddits.push(name); saveSubs(); renderChips(); closeAddModal();
+  toast("r/"+name+" added!","ok"); fetchFeedBatch();
+}
+function removeSub(name){
+  subreddits=subreddits.filter(s=>s!==name); saveSubs();
+  if(currentSub===name) currentSub="all"; renderChips(); toast("Removed r/"+name,"info");
+}
+$subAddBtn.addEventListener("click",()=>addSub($subInput.value));
+$subInput.addEventListener("keydown",e=>{ if(e.key==="Enter") addSub($subInput.value); });
+document.querySelectorAll(".pop-chip").forEach(c=>c.addEventListener("click",()=>addSub(c.dataset.s)));
+
+/* ── CARD BUILDER ── */
+function buildCard(m, mode="feed"){
+  const card=document.createElement("div");
+  card.className="meme-card"; card.dataset.id=m.id; card.dataset.sub=m.sub;
+  card.innerHTML=`
+    <div class="meme-info">
+      <div class="meme-meta">
+        <span>r/${esc(m.sub)}</span><span class="dot">·</span>
+        <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score)}</span><span class="dot">·</span>
+        <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt)}</span>
+      </div>
+      <div class="meme-title">${esc(m.title)}</div>
+    </div>
+    <div class="img-wrap">
+      <div class="img-loader"><div class="spin"></div></div>
+      <img alt="${esc(m.title)}" decoding="async">
+    </div>
+    <div class="meme-actions">
+      <button class="maction save ${saved.has(m.id)?"saved":""}">
+        <i class="fa-${saved.has(m.id)?"solid":"regular"} fa-bookmark"></i>
+        ${saved.has(m.id)?"Saved":"Save"}
+      </button>
+      <button class="maction cmt"><i class="fa-regular fa-comment"></i> Comments</button>
+      <button class="maction share"><i class="fa-solid fa-paper-plane"></i> Send</button>
+    </div>`;
+  const img=card.querySelector("img"); const loader=card.querySelector(".img-loader");
+  const io=new IntersectionObserver((entries,obs)=>{
+    if(!entries[0].isIntersecting) return; obs.disconnect();
+    img.addEventListener("load",()=>{ img.classList.add("visible"); loader.classList.add("hide"); },{once:true});
+    img.addEventListener("error",()=>{ loader.innerHTML=`<div class="img-err"><i class="fa-regular fa-image"></i><span>Unavailable</span></div>`; },{once:true});
+    img.src=m.imageUrl;
+  },{rootMargin:"0px 0px 100% 0px",threshold:0});
+  io.observe(card);
+  card.querySelector(".maction.share").addEventListener("click",async function(){
+    await sendMeme(this,m);
+    if(mode==="search") setTimeout(()=>switchToChat(),500);
+  });
+  card.querySelector(".maction.cmt").addEventListener("click",()=>openComments(m.permalink,m.numCmt));
+  card.querySelector(".maction.save").addEventListener("click",function(){ toggleSave(this,m.id); });
+  return card;
+}
+
+/* ── FEED ── */
+async function fetchFeedBatch(){
+  if(feedFetching) return; feedFetching=true;
+  const pool=currentSub==="all"?subreddits:[currentSub];
+  let added=0,tries=0; const MAX=pool.length*2;
+  while(added<5&&tries<MAX){
+    const sub=pool[feedRR%pool.length]; feedRR++; tries++;
+    const after=feedCursors[sub]||"";
+    const url=`https://www.reddit.com/r/${sub}/hot.json?limit=25&raw_json=1${after?"&after="+after:""}`;
+    try{
+      const json=await redditFetch(url); if(!json?.data) continue;
+      feedCursors[sub]=json.data.after||null;
+      const frag=document.createDocumentFragment();
+      for(const{data:d}of(json.data.children||[])){
+        if(seenIds.has(d.id)||!isValid(d)) continue;
+        seenIds.add(d.id); frag.appendChild(buildCard(toMeme(d),"feed")); added++;
+      }
+      const sentinel=document.getElementById("feed-sentinel");
+      if(sentinel) $feedScroll.insertBefore(frag,sentinel); else $feedScroll.appendChild(frag);
+      saveSeen();
+    }catch(e){ console.error("Feed fetch:",e); }
+  }
+  if($feedInit?.parentNode) $feedInit.remove();
+  if(added===0&&!$feedScroll.querySelector(".meme-card")) showFeedError();
+  feedFetching=false;
+}
+const feedIO=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!feedFetching) fetchFeedBatch();
+},{rootMargin:"0px 0px 200px 0px",threshold:0});
+function ensureFeedSentinel(){
+  if(document.getElementById("feed-sentinel")) return;
+  const s=document.createElement("div"); s.id="feed-sentinel"; s.className="sentinel";
+  s.innerHTML='<div class="spin" style="opacity:.35"></div>';
+  $feedScroll.appendChild(s); feedIO.observe(s);
+}
+function showFeedError(){
+  const el=document.createElement("div"); el.className="feed-state";
+  el.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i>
+    <span>Couldn't load memes.<br>Check connection or try another subreddit.</span>
+    <button class="retry-btn" id="retryBtn">🔄 Retry</button>`;
+  $feedScroll.appendChild(el);
+  document.getElementById("retryBtn").addEventListener("click",()=>{ el.remove(); fetchFeedBatch(); });
+}
+
+/* ── SEARCH ── */
+$openSearch.addEventListener("click",()=>{
+  $searchOverlay.classList.add("show");
+  requestAnimationFrame(()=>$searchInput.focus());
+});
+$searchBack.addEventListener("click",closeSearch);
+function closeSearch(){
+  $searchOverlay.classList.remove("show");
+  searchQuery=""; searchAfter=""; searchExhausted=false;
+  $searchInput.value=""; $searchClear.classList.remove("vis");
+  $searchScroll.innerHTML="";
+  if(srchSentinelEl){ srchIO.unobserve(srchSentinelEl); srchSentinelEl=null; }
+}
+const debouncedSearch=debounce(q=>startSearch(q),480);
+$searchInput.addEventListener("input",()=>{
+  const q=$searchInput.value.trim();
+  $searchClear.classList.toggle("vis",q.length>0);
+  if(!q){ resetSearch(); return; } debouncedSearch(q);
+});
+$searchClear.addEventListener("click",()=>{ $searchInput.value=""; $searchClear.classList.remove("vis"); resetSearch(); });
+function resetSearch(){
+  searchQuery=""; searchAfter=""; searchExhausted=false; $searchScroll.innerHTML="";
+  if(srchSentinelEl){ srchIO.unobserve(srchSentinelEl); srchSentinelEl=null; }
+}
+function startSearch(q){
+  if(q===searchQuery) return;
+  searchQuery=q; searchAfter=""; searchExhausted=false; searchFetching=false;
+  if(srchSentinelEl){ srchIO.unobserve(srchSentinelEl); srchSentinelEl=null; }
+  $searchScroll.innerHTML=`<div class="feed-state"><div class="spin lg"></div><span>Searching...</span></div>`;
+  fetchSearchBatch();
+}
+async function fetchSearchBatch(){
+  if(searchFetching||searchExhausted) return; searchFetching=true;
+  const url=`https://www.reddit.com/search.json?q=${encodeURIComponent(searchQuery)}&sort=relevance&limit=25&type=link&raw_json=1`+(searchAfter?`&after=${searchAfter}`:"");
+  try{
+    const json=await redditFetch(url); const data=json?.data;
+    const init=$searchScroll.querySelector(".feed-state"); if(init) init.remove();
+    if(!data?.children?.length){
+      searchExhausted=true;
+      if(!$searchScroll.querySelector(".meme-card"))
+        $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No results for "<b>${esc(searchQuery)}</b>"</span></div>`;
+      searchFetching=false; return;
+    }
+    searchAfter=data.after||""; if(!searchAfter) searchExhausted=true;
+    const frag=document.createDocumentFragment(); let added=0;
+    for(const{data:d}of data.children){
+      if(!isValid(d)) continue; frag.appendChild(buildCard(toMeme(d),"search")); added++;
+    }
+    const srchSentinel=document.getElementById("search-sentinel");
+    if(srchSentinel) $searchScroll.insertBefore(frag,srchSentinel); else $searchScroll.appendChild(frag);
+    if(added===0&&!$searchScroll.querySelector(".meme-card"))
+      $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No image memes for "<b>${esc(searchQuery)}</b>"</span></div>`;
+    if(!searchExhausted) ensureSrchSentinel();
+  }catch(e){
+    console.error("Search:",e);
+    const init=$searchScroll.querySelector(".feed-state"); if(init) init.remove();
+    if(!$searchScroll.querySelector(".meme-card"))
+      $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-solid fa-triangle-exclamation"></i><span>Search failed. Try again.</span></div>`;
+  }
+  searchFetching=false;
+}
+let srchSentinelEl=null;
+const srchIO=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!searchFetching&&!searchExhausted) fetchSearchBatch();
+},{rootMargin:"0px 0px 200px 0px",threshold:0});
+function ensureSrchSentinel(){
+  if(document.getElementById("search-sentinel")) return;
+  const s=document.createElement("div"); s.id="search-sentinel"; s.className="sentinel";
+  s.innerHTML='<div class="spin" style="opacity:.35"></div>';
+  $searchScroll.appendChild(s); srchSentinelEl=s; srchIO.observe(s);
+}
+
+/* ── SEND / SAVE ── */
+async function sendMeme(btn,m){
+  if(btn.classList.contains("sent")) return;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled=true;
+  try{
+    await push(chatRef,{
+      type:"meme", imageUrl:m.imageUrl, title:m.title,
+      sub:m.sub, score:m.score, numCmt:m.numCmt,
+      permalink:m.permalink, username, createdAt:Date.now()
     });
+    btn.classList.add("sent"); btn.innerHTML='<i class="fa-solid fa-check"></i> Sent!';
+    toast("Sent to chat 🔥","ok");
+  }catch{
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';
+    btn.disabled=false; toast("Send failed","err");
+  }
+}
+function toggleSave(btn,id){
+  if(saved.has(id)){
+    saved.delete(id); btn.classList.remove("saved");
+    btn.innerHTML='<i class="fa-regular fa-bookmark"></i> Save'; toast("Removed");
+  }else{
+    saved.add(id); btn.classList.add("saved");
+    btn.innerHTML='<i class="fa-solid fa-bookmark"></i> Saved'; toast("Saved! 🔖","ok");
+  }
+  saveSaved();
+}
+
+/* ── COMMENTS ── */
+async function openComments(permalink,totalCount){
+  $sheetBg.classList.add("on"); $sheet.classList.add("on");
+  $sheetCount.textContent=totalCount?` · ${fmtN(totalCount)}`:"";
+  $sheetBody.innerHTML=`<div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>`;
+  try{
+    const url=`https://www.reddit.com${permalink}.json?limit=50&depth=1&raw_json=1`;
+    const json=await redditFetch(url);
+    const kids=json?.[1]?.data?.children||[];
+    const cmts=kids.filter(c=>c.kind==="t1"&&c.data?.body&&c.data.body!=="[deleted]"&&c.data.body!=="[removed]");
+    $sheetBody.innerHTML="";
+    if(!cmts.length){ $sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-regular fa-comment-slash"></i><span>No comments yet</span></div>`; return; }
+    const frag=document.createDocumentFragment();
+    cmts.forEach(c=>{
+      const d=c.data; const div=document.createElement("div"); div.className="cmt-card";
+      div.innerHTML=`<div class="cmt-header"><span class="cmt-author">u/${esc(d.author)}</span><span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score||0)}</span></div><div class="cmt-body">${esc(d.body)}</div><div class="cmt-time">${relTime(d.created_utc)}</div>`;
+      frag.appendChild(div);
+    });
+    $sheetBody.appendChild(frag);
+    if(cmts.length>=50||(totalCount&&cmts.length<totalCount)){
+      const note=document.createElement("p");
+      note.style.cssText="text-align:center;color:var(--muted);font-size:11px;padding:6px 0";
+      note.textContent=`Showing ${cmts.length} of ${fmtN(totalCount||cmts.length)}`;
+      $sheetBody.appendChild(note);
+    }
+    requestAnimationFrame(()=>{ $sheetBody.scrollTop=0; });
+  }catch{
+    $sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-solid fa-triangle-exclamation"></i><span>Could not load comments</span></div>`;
+  }
+}
+function closeSheet(){
+  $sheet.classList.remove("on"); $sheetBg.classList.remove("on");
+  setTimeout(()=>{ $sheetBody.innerHTML=""; $sheetCount.textContent=""; },350);
+}
+$sheetBg.addEventListener("click",closeSheet);
+$sheetX.addEventListener("click",closeSheet);
+
+/* ── CHAT ── */
+async function sendText(){
+  const txt=$chatIn.value.trim(); if(!txt) return;
+  $chatIn.value="";
+  try{ await push(chatRef,{type:"text",text:txt,username,createdAt:Date.now()}); }
+  catch{ toast("Send failed","err"); }
+}
+$chatSend.addEventListener("click",sendText);
+$chatIn.addEventListener("keydown",e=>{ if(e.key==="Enter") sendText(); });
+
+/* Build rich meme card for chat messages */
+function buildChatMemeCard(m){
+  const card=document.createElement("div"); card.className="msg-meme-card";
+  card.innerHTML=`
+    <div class="msg-meme-info">
+      <div class="msg-meme-meta">
+        <span>r/${esc(m.sub||"")}</span>
+        <span class="dot">·</span>
+        <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span>
+        <span class="dot">·</span>
+        <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
+      </div>
+      <div class="msg-meme-title">${esc(m.title||"")}</div>
+    </div>
+    <div class="msg-meme-img-wrap">
+      <img src="${esc(m.imageUrl||"")}" alt="${esc(m.title||"")}" loading="lazy" decoding="async">
+    </div>
+    <div class="msg-meme-footer">
+      <span class="msg-meme-stat"><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span>
+      <span class="msg-meme-stat"><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
+    </div>`;
+  return card;
+}
+
+onChildAdded(query(chatRef,limitToLast(150)), snap=>{
+  const m=snap.val(); if(!m?.username) return;
+  $chatEmpty.style.display="none";
+  const mine=m.username===username;
+  const atBottom=isAtBottom();
+  const wrap=document.createElement("div"); wrap.className="msg "+(mine?"out":"in");
+  const who=document.createElement("div"); who.className="msg-who"; who.textContent=m.username; wrap.appendChild(who);
+  if(m.type==="meme"){
+    wrap.appendChild(buildChatMemeCard(m));
+  }else{
+    const bubble=document.createElement("div"); bubble.className="msg-bubble"; bubble.textContent=m.text||""; wrap.appendChild(bubble);
+  }
+  const ts=document.createElement("div"); ts.className="msg-ts"; ts.textContent=fmtT(m.createdAt); wrap.appendChild(ts);
+  $chatMsgs.appendChild(wrap);
+  if(atBottom||firstLoad){
+    requestAnimationFrame(()=>{ $chatMsgs.scrollTop=$chatMsgs.scrollHeight; });
+  }else if(!mine){
+    unreadCount++;
+    if(!chatOpen) setNavBadge(unreadCount);
+    showBanner(unreadCount);
+  }
+  firstLoad=false;
 });
 
-function refreshFeed(btn) {
-    if (feedFetching) return;
-    btn.classList.add("refreshing");
-    btn.addEventListener("animationend", () => btn.classList.remove("refreshing"), { once: true });
-
-    const flash = document.createElement("div");
-    flash.className = "feed-refresh-flash";
-    $pfeed.appendChild(flash);
-    flash.addEventListener("animationend", () => flash.remove(), { once: true });
-
-    /* Remove cards + sentinel */
-    [...$feedScroll.querySelectorAll(".meme-card, .feed-state, .sentinel")]
-        .forEach(el => el.remove());
-
-    /* Reset cursors for fresh fetch */
-    Object.keys(feedCursors).forEach(k => delete feedCursors[k]);
-    feedRR = 0;
-
-    toast("Feed refreshed 🔄", "info");
-    ensureFeedSentinel();
-    fetchFeedBatch();
-}
-
-function switchToChat() {
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("on"));
-    $panels.forEach(p => p.classList.remove("on"));
-    document.querySelector('[data-tab="chat"]').classList.add("on");
-    document.getElementById("p-chat").classList.add("on");
-    requestAnimationFrame(() => { $chatMsgs.scrollTop = $chatMsgs.scrollHeight; });
-}
-
-/* ══════════════════════════════════════════
-   SUBREDDIT CHIPS
-══════════════════════════════════════════ */
-function renderChips() {
-    /* Use DocumentFragment — one DOM write instead of many */
-    const frag = document.createDocumentFragment();
-    frag.appendChild(mkChip("All","all",false));
-    subreddits.forEach(s => frag.appendChild(mkChip("r/"+s, s, subreddits.length > 1)));
-    /* Remove old chips, keep add button */
-    [...$subsRow.querySelectorAll(".sub-chip")].forEach(c => c.remove());
-    $subsRow.insertBefore(frag, $openAddSub);
-    syncChips();
-}
-function mkChip(label, val, removable) {
-    const c = document.createElement("button");
-    c.className = "sub-chip"; c.dataset.sub = val;
-    c.textContent = label;
-    if (removable) {
-        const rm = document.createElement("span");
-        rm.className = "rm"; rm.textContent = " ×"; rm.title = "Remove";
-        rm.addEventListener("click", e => { e.stopPropagation(); removeSub(val); });
-        c.appendChild(rm);
-    }
-    c.addEventListener("click", () => filterSub(val));
-    return c;
-}
-function syncChips() {
-    $subsRow.querySelectorAll(".sub-chip").forEach(c =>
-        c.classList.toggle("on", c.dataset.sub === currentSub));
-}
-function filterSub(sub) {
-    if (currentSub === sub) return;
-    currentSub = sub; syncChips();
-    let hasVisible = false;
-    $feedScroll.querySelectorAll(".meme-card").forEach(c => {
-        const show = sub==="all" || c.dataset.sub===sub;
-        c.style.display = show ? "flex" : "none";
-        if (show) hasVisible = true;
-    });
-    if (!hasVisible) fetchFeedBatch();
-}
-
-$openAddSub.addEventListener("click", () => { $addModal.classList.add("on"); $subInput.focus(); });
-$closeModal.addEventListener("click", closeAddModal);
-$addModal.addEventListener("click", e => { if(e.target===$addModal) closeAddModal(); });
-function closeAddModal() { $addModal.classList.remove("on"); $subInput.value = ""; }
-
-function addSub(raw) {
-    const name = raw.trim().replace(/^r\//i,"").replace(/\s+/g,"");
-    if (!name) return;
-    if (subreddits.some(s => s.toLowerCase()===name.toLowerCase())) { toast("Already added","info"); return; }
-    subreddits.push(name); saveSubs(); renderChips(); closeAddModal();
-    toast("r/"+name+" added!","ok"); fetchFeedBatch();
-}
-function removeSub(name) {
-    subreddits = subreddits.filter(s => s!==name); saveSubs();
-    if (currentSub===name) currentSub="all";
-    renderChips(); toast("Removed r/"+name,"info");
-}
-$subAddBtn.addEventListener("click", () => addSub($subInput.value));
-$subInput.addEventListener("keydown", e => { if(e.key==="Enter") addSub($subInput.value); });
-document.querySelectorAll(".pop-chip").forEach(c =>
-    c.addEventListener("click", () => addSub(c.dataset.s)));
-
-/* ══════════════════════════════════════════
-   CARD BUILDER
-   Uses DocumentFragment for batch DOM ops.
-   Lazy-loads image only when card is visible.
-══════════════════════════════════════════ */
-function buildCard(m, mode = "feed") {
-    const card = document.createElement("div");
-    card.className = "meme-card";
-    card.dataset.id  = m.id;
-    card.dataset.sub = m.sub;
-
-
-    /* innerHTML once — fewer reflows than appending individual nodes */
-    card.innerHTML = `
-        <div class="meme-info">
-            <div class="meme-meta">
-                <span>r/${esc(m.sub)}</span>
-                <span class="dot">·</span>
-                <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score)}</span>
-                <span class="dot">·</span>
-                <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt)}</span>
-            </div>
-            <div class="meme-title">${esc(m.title)}</div>
-        </div>
-        <div class="img-wrap">
-            <div class="img-loader"><div class="spin"></div></div>
-            <img alt="${esc(m.title)}" decoding="async">
-        </div>
-        <div class="meme-actions">
-            <button class="maction save ${saved.has(m.id)?"saved":""}">
-                <i class="fa-${saved.has(m.id)?"solid":"regular"} fa-bookmark"></i>
-                ${saved.has(m.id)?"Saved":"Save"}
-            </button>
-            <button class="maction cmt"><i class="fa-regular fa-comment"></i> Comments</button>
-            <button class="maction share"><i class="fa-solid fa-paper-plane"></i> Send</button>
-        </div>`;
-
-
-    const img    = card.querySelector("img");
-    const loader = card.querySelector(".img-loader");
-
-    /*
-     * Lazy image loading via IntersectionObserver.
-     * Image src is only set when the card scrolls near viewport.
-     * This prevents loading 20+ images at once on slow Android connections.
-     */
-    const imgIO = new IntersectionObserver((entries, obs) => {
-        if (!entries[0].isIntersecting) return;
-        obs.disconnect(); // load once
-
-        img.addEventListener("load", () => {
-            img.classList.add("visible");
-            loader.classList.add("hide");
-        }, { once: true });
-        img.addEventListener("error", () => {
-            loader.innerHTML = `<div class="img-err"><i class="fa-regular fa-image"></i><span>Unavailable</span></div>`;
-        }, { once: true });
-        img.src = m.imageUrl;
-    }, {
-        /* rootMargin: pre-load when card is 100% below viewport */
-        rootMargin: "0px 0px 100% 0px",
-        threshold: 0
-    });
-    imgIO.observe(card);
-
-    const shareBtn = card.querySelector(".maction.share");
-    shareBtn.addEventListener("click", async () => {
-        await sendMeme(shareBtn, m);
-        if (mode === "search") setTimeout(() => switchToChat(), 500);
-    });
-    card.querySelector(".maction.cmt").addEventListener("click",
-        () => openComments(m.permalink, m.numCmt));
-    card.querySelector(".maction.save").addEventListener("click",
-        function(){ toggleSave(this, m.id); });
-
-    return card;
-}
-
-/* ══════════════════════════════════════════
-   FEED — fetch + IntersectionObserver scroll
-══════════════════════════════════════════ */
-async function fetchFeedBatch() {
-    if (feedFetching) return;
-    feedFetching = true;
-
-    const pool = currentSub==="all" ? subreddits : [currentSub];
-    let added = 0, tries = 0;
-    const MAX = pool.length * 2;
-
-    while (added < 5 && tries < MAX) {
-        const sub   = pool[feedRR % pool.length];
-        feedRR++; tries++;
-        const after = feedCursors[sub] || "";
-        const url   = `https://www.reddit.com/r/${sub}/hot.json?limit=25&raw_json=1${after?"&after="+after:""}`;
-        try {
-            const json = await redditFetch(url);
-            if (!json?.data) continue;
-            feedCursors[sub] = json.data.after || null;
-
-            /*
-             * Build all cards into a DocumentFragment first,
-             * then do ONE DOM insertion — avoids multiple reflows.
-             */
-            const frag = document.createDocumentFragment();
-            for (const {data: d} of (json.data.children||[])) {
-                if (seenIds.has(d.id) || !isValid(d)) continue;
-                seenIds.add(d.id);
-                frag.appendChild(buildCard(toMeme(d), "feed"));
-                added++;
-            }
-            const sentinel = document.getElementById("feed-sentinel");
-            if (sentinel) $feedScroll.insertBefore(frag, sentinel);
-            else          $feedScroll.appendChild(frag);
-            saveSeen();
-        } catch(e) { console.error("Feed fetch:", e); }
-    }
-
-    if ($feedInit?.parentNode) $feedInit.remove();
-    if (added===0 && !$feedScroll.querySelector(".meme-card")) showFeedError();
-    feedFetching = false;
-}
-
-/* Single IntersectionObserver for feed sentinel */
-const feedIO = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting && !feedFetching) fetchFeedBatch();
-}, { rootMargin: "0px 0px 200px 0px", threshold: 0 });
-
-function ensureFeedSentinel() {
-    if (document.getElementById("feed-sentinel")) return;
-    const s = document.createElement("div");
-    s.id = "feed-sentinel"; s.className = "sentinel";
-    s.innerHTML = '<div class="spin" style="opacity:.35"></div>';
-    $feedScroll.appendChild(s);
-    feedIO.observe(s);
-}
-
-function showFeedError() {
-    const el = document.createElement("div");
-    el.className = "feed-state";
-    el.innerHTML = `
-        <i class="fa-solid fa-triangle-exclamation"></i>
-        <span>Couldn't load memes.<br>Check connection or try another subreddit.</span>
-        <button class="retry-btn" id="retryBtn">↻ Retry</button>`;
-    $feedScroll.appendChild(el);
-    document.getElementById("retryBtn").addEventListener("click", () => {
-        el.remove(); fetchFeedBatch();
-    });
-}
-
-/* ══════════════════════════════════════════
-   SEARCH
-══════════════════════════════════════════ */
-$openSearch.addEventListener("click", () => {
-    $searchOverlay.classList.add("show");
-    /* rAF — focus after transition paint */
-    requestAnimationFrame(() => $searchInput.focus());
-});
-$searchBack.addEventListener("click", closeSearch);
-
-function closeSearch() {
-    $searchOverlay.classList.remove("show");
-    searchQuery = ""; searchAfter = ""; searchExhausted = false;
-    $searchInput.value = ""; $searchClear.classList.remove("vis");
-    $searchScroll.innerHTML = "";
-    if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
-}
-
-/* Debounced search input */
-const debouncedSearch = debounce(q => startSearch(q), 480);
-
-$searchInput.addEventListener("input", () => {
-    const q = $searchInput.value.trim();
-    $searchClear.classList.toggle("vis", q.length > 0);
-    if (!q) { resetSearch(); return; }
-    debouncedSearch(q);
-});
-$searchClear.addEventListener("click", () => {
-    $searchInput.value = ""; $searchClear.classList.remove("vis"); resetSearch();
-});
-
-function resetSearch() {
-    searchQuery = ""; searchAfter = ""; searchExhausted = false;
-    $searchScroll.innerHTML = "";
-    if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
-}
-
-function startSearch(q) {
-    if (q === searchQuery) return;
-    searchQuery = q; searchAfter = ""; searchExhausted = false; searchFetching = false;
-    if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
-    $searchScroll.innerHTML = `<div class="feed-state"><div class="spin lg"></div><span>Searching...</span></div>`;
-    fetchSearchBatch();
-}
-
-async function fetchSearchBatch() {
-    if (searchFetching || searchExhausted) return;
-    searchFetching = true;
-
-    const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(searchQuery)}`
-              + `&sort=relevance&limit=25&type=link&raw_json=1`
-              + (searchAfter ? `&after=${searchAfter}` : "");
-    try {
-        const json = await redditFetch(url);
-        const data = json?.data;
-        const init = $searchScroll.querySelector(".feed-state");
-        if (init) init.remove();
-
-        if (!data?.children?.length) {
-            searchExhausted = true;
-            if (!$searchScroll.querySelector(".meme-card"))
-                $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No results for "<b>${esc(searchQuery)}</b>"</span></div>`;
-            searchFetching = false; return;
-        }
-
-        searchAfter = data.after || "";
-        if (!searchAfter) searchExhausted = true;
-
-        /* Batch DOM insert */
-        const frag = document.createDocumentFragment();
-        let added = 0;
-        for (const {data: d} of data.children) {
-            if (!isValid(d)) continue;
-            frag.appendChild(buildCard(toMeme(d), "search"));
-            added++;
-        }
-        const srchSentinel = document.getElementById("search-sentinel");
-        if (srchSentinel) $searchScroll.insertBefore(frag, srchSentinel);
-        else              $searchScroll.appendChild(frag);
-
-        if (added===0 && !$searchScroll.querySelector(".meme-card"))
-            $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No image memes for "<b>${esc(searchQuery)}</b>"</span></div>`;
-
-        if (!searchExhausted) ensureSrchSentinel();
-    } catch(e) {
-        console.error("Search:", e);
-        const init = $searchScroll.querySelector(".feed-state");
-        if (init) init.remove();
-        if (!$searchScroll.querySelector(".meme-card"))
-            $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-solid fa-triangle-exclamation"></i><span>Search failed. Try again.</span></div>`;
-    }
-    searchFetching = false;
-}
-
-let srchSentinelEl = null;
-const srchIO = new IntersectionObserver(entries => {
-    if (entries[0].isIntersecting && !searchFetching && !searchExhausted) fetchSearchBatch();
-}, { rootMargin: "0px 0px 200px 0px", threshold: 0 });
-
-function ensureSrchSentinel() {
-    if (document.getElementById("search-sentinel")) return;
-    const s = document.createElement("div");
-    s.id = "search-sentinel"; s.className = "sentinel";
-    s.innerHTML = '<div class="spin" style="opacity:.35"></div>';
-    $searchScroll.appendChild(s);
-    srchSentinelEl = s;
-    srchIO.observe(s);
-}
-
-/* ══════════════════════════════════════════
-   SEND / SAVE
-══════════════════════════════════════════ */
-async function sendMeme(btn, m) {
-    if (btn.classList.contains("sent")) return;
-    btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
-    btn.disabled  = true;
-    try {
-        await push(chatRef, {
-            type:"meme", imageUrl:m.imageUrl, title:m.title,
-            username, createdAt:Date.now()
-        });
-        btn.classList.add("sent");
-        btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent!';
-        toast("Sent to chat 🔥","ok");
-    } catch {
-        btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send';
-        btn.disabled  = false;
-        toast("Send failed","err");
-    }
-}
-
-function toggleSave(btn, id) {
-    if (saved.has(id)) {
-        saved.delete(id);
-        btn.classList.remove("saved");
-        btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save';
-        toast("Removed");
-    } else {
-        saved.add(id);
-        btn.classList.add("saved");
-        btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
-        toast("Saved! 🔖","ok");
-    }
-    saveSaved();
-}
-
-/* ══════════════════════════════════════════
-   COMMENTS — smooth Android scroll
-══════════════════════════════════════════ */
-async function openComments(permalink, totalCount) {
-    $sheetBg.classList.add("on");
-    $sheet.classList.add("on");
-    $sheetCount.textContent = totalCount ? ` · ${fmtN(totalCount)}` : "";
-    $sheetBody.innerHTML = `<div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>`;
-
-    try {
-        const url  = `https://www.reddit.com${permalink}.json?limit=50&depth=1&raw_json=1`;
-        const json = await redditFetch(url);
-        const kids = json?.[1]?.data?.children || [];
-        const cmts = kids.filter(c =>
-            c.kind==="t1" && c.data?.body &&
-            c.data.body!=="[deleted]" && c.data.body!=="[removed]"
-        );
-
-        $sheetBody.innerHTML = "";
-
-        if (!cmts.length) {
-            $sheetBody.innerHTML = `<div class="sheet-empty"><i class="fa-regular fa-comment-slash"></i><span>No comments yet</span></div>`;
-            return;
-        }
-
-        /*
-         * Batch-render all comments into a DocumentFragment.
-         * One DOM write = one reflow instead of N reflows.
-         */
-        const frag = document.createDocumentFragment();
-        cmts.forEach(c => {
-            const d   = c.data;
-            const div = document.createElement("div");
-            div.className = "cmt-card";
-            div.innerHTML = `
-                <div class="cmt-header">
-                    <span class="cmt-author">u/${esc(d.author)}</span>
-                    <span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score||0)}</span>
-                </div>
-                <div class="cmt-body">${esc(d.body)}</div>
-                <div class="cmt-time">${relTime(d.created_utc)}</div>`;
-            frag.appendChild(div);
-        });
-        $sheetBody.appendChild(frag);
-
-        if (cmts.length >= 50 || (totalCount && cmts.length < totalCount)) {
-            const note = document.createElement("p");
-            note.style.cssText = "text-align:center;color:var(--muted);font-size:11px;padding:6px 0";
-            note.textContent   = `Showing ${cmts.length} of ${fmtN(totalCount||cmts.length)}`;
-            $sheetBody.appendChild(note);
-        }
-
-        /* Reset scroll after paint */
-        requestAnimationFrame(() => { $sheetBody.scrollTop = 0; });
-
-    } catch {
-        $sheetBody.innerHTML = `<div class="sheet-empty"><i class="fa-solid fa-triangle-exclamation"></i><span>Could not load comments</span></div>`;
-    }
-}
-
-function closeSheet() {
-    $sheet.classList.remove("on");
-    $sheetBg.classList.remove("on");
-    setTimeout(() => { $sheetBody.innerHTML = ""; $sheetCount.textContent = ""; }, 350);
-}
-$sheetBg.addEventListener("click", closeSheet);
-$sheetX.addEventListener("click", closeSheet);
-
-/* ══════════════════════════════════════════
-   CHAT
-══════════════════════════════════════════ */
-async function sendText() {
-    const txt = $chatIn.value.trim();
-    if (!txt) return;
-    $chatIn.value = "";
-    try {
-        await push(chatRef, { type:"text", text:txt, username, createdAt:Date.now() });
-    } catch { toast("Send failed","err"); }
-}
-$chatSend.addEventListener("click", sendText);
-$chatIn.addEventListener("keydown", e => { if(e.key==="Enter") sendText(); });
-
-onChildAdded(query(chatRef, limitToLast(150)), snap => {
-    const m = snap.val();
-    if (!m?.username) return;
-    $chatEmpty.style.display = "none";
-
-    const mine = m.username === username;
-    const wrap = document.createElement("div");
-    wrap.className = "msg " + (mine?"out":"in");
-
-    let html = `<div class="msg-who">${esc(m.username)}</div>`;
-    html += m.type==="meme"
-        ? `<div class="msg-bubble"><img class="msg-meme-img" src="${esc(m.imageUrl)}" alt="${esc(m.title)}" loading="lazy" decoding="async"><div class="msg-meme-cap">${esc(m.title)}</div></div>`
-        : `<div class="msg-bubble">${esc(m.text)}</div>`;
-    html += `<div class="msg-ts">${fmtT(m.createdAt)}</div>`;
-    wrap.innerHTML = html;
-
-    $chatMsgs.appendChild(wrap);
-    /* rAF — scroll after paint to avoid layout thrashing */
-    requestAnimationFrame(() => { $chatMsgs.scrollTop = $chatMsgs.scrollHeight; });
-});
-
-/* ══════════════════════════════════════════
-   BOOT
-══════════════════════════════════════════ */
-function start() {
-    renderChips();
-    ensureFeedSentinel();
-    fetchFeedBatch();
+/* ── BOOT ── */
+function start(){
+  renderChips();
+  ensureFeedSentinel();
+  fetchFeedBatch();
+  initPresence();
 }
 initUser();
 </script>
