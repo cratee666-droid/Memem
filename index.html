@@ -22,6 +22,7 @@ maximum-scale=1.0, user-scalable=no">
   --green:      #2ecf8a;
   --red:        #e05c6a;
   --blue:       #4dabf7;
+  --yellow:     #f5c542;
   --border:     #3a3d47;
   --radius:     16px;
   --radius-sm:  10px;
@@ -44,6 +45,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .toast.ok{border-color:var(--green);color:var(--green);}
 .toast.err{border-color:var(--red);color:var(--red);}
 .toast.info{border-color:var(--blue);color:var(--blue);}
+.toast.warn{border-color:var(--yellow);color:var(--yellow);}
 @keyframes tIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
 @keyframes tOut{to{opacity:0}}
 
@@ -59,7 +61,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .btn-primary{padding:13px;background:linear-gradient(135deg,var(--accent),#0e9090);color:#fff;border:none;border-radius:var(--radius);font-family:inherit;font-size:15px;font-weight:700;cursor:pointer;transition:transform .12s;touch-action:manipulation;}
 .btn-primary:active{transform:scale(.97);}
 
-/* App shell */
+/* App */
 .app{display:flex;flex-direction:column;height:100vh;height:-webkit-fill-available;position:relative;z-index:1;isolation:isolate;}
 .panels{flex:1;overflow:hidden;position:relative;min-height:0;}
 .panel{position:absolute;inset:0;opacity:0;visibility:hidden;transition:opacity .18s,visibility .18s;display:flex;flex-direction:column;}
@@ -78,15 +80,30 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 @keyframes iconSpin{0%{transform:rotate(0deg) scale(1)}40%{transform:rotate(200deg) scale(1.15)}100%{transform:rotate(360deg) scale(1)}}
 .nav-btn.refreshing i{animation:iconSpin .5s cubic-bezier(.4,0,.2,1) forwards;color:var(--accent);}
 
-/* Feed top bar */
-.feed-top-bar{flex-shrink:0;padding:7px 10px;background:var(--bg2);border-bottom:1px solid var(--border);}
-.subs-row{display:flex;align-items:center;gap:6px;overflow-x:auto;padding-bottom:2px;-webkit-overflow-scrolling:touch;}
+/* ═══════════════════════════════
+   SORT BAR
+═══════════════════════════════ */
+.feed-top-bar{flex-shrink:0;background:var(--bg2);border-bottom:1px solid var(--border);}
+.subs-row{display:flex;align-items:center;gap:6px;overflow-x:auto;padding:7px 10px 4px;-webkit-overflow-scrolling:touch;}
 .subs-row::-webkit-scrollbar{display:none;}
+
+/* Sort row */
+.sort-row{display:flex;align-items:center;gap:6px;padding:4px 10px 6px;overflow-x:auto;-webkit-overflow-scrolling:touch;border-top:1px solid rgba(255,255,255,.04);}
+.sort-row::-webkit-scrollbar{display:none;}
+.sort-chip{flex-shrink:0;display:flex;align-items:center;gap:5px;padding:4px 11px;border-radius:14px;background:transparent;border:1px solid transparent;font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;touch-action:manipulation;transition:all .15s;font-family:inherit;white-space:nowrap;}
+.sort-chip i{font-size:10px;}
+.sort-chip.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
+.sort-chip:active{opacity:.7;}
+
 .sub-chip{flex-shrink:0;padding:5px 11px;border-radius:14px;background:var(--card);border:1px solid var(--border);font-size:11px;font-weight:600;color:var(--muted);cursor:pointer;touch-action:manipulation;transition:all .15s;display:flex;align-items:center;gap:4px;white-space:nowrap;font-family:inherit;}
 .sub-chip.on{background:var(--accent-dim);border-color:var(--accent);color:var(--accent);}
 .sub-chip.pinned-chip{border-color:rgba(245,197,66,.4);color:#f5c542;}
 .sub-chip .rm{font-size:10px;opacity:.5;}
 .add-sub-btn{flex-shrink:0;width:28px;height:28px;border-radius:50%;background:var(--card);border:1.5px dashed var(--border);color:var(--accent);cursor:pointer;touch-action:manipulation;display:flex;align-items:center;justify-content:center;font-size:13px;}
+
+/* Admin banner */
+.admin-banner{flex-shrink:0;padding:5px 12px;background:rgba(23,184,184,.08);border-bottom:1px solid rgba(23,184,184,.2);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--accent);font-weight:600;}
+.admin-banner i{font-size:10px;}
 
 /* Search overlay */
 .search-overlay{position:fixed;inset:0;z-index:500;background:var(--bg);display:flex;flex-direction:column;opacity:0;visibility:hidden;transition:opacity .25s,visibility .25s;}
@@ -119,6 +136,18 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .media-err{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px;color:var(--muted);font-size:13px;text-align:center;padding:20px;z-index:2;}
 .media-err i{font-size:32px;opacity:.3;}
 .media-badge{position:absolute;bottom:10px;left:10px;z-index:5;background:rgba(0,0,0,.75);color:#fff;font-size:10px;font-weight:800;letter-spacing:1px;padding:3px 8px;border-radius:6px;border:1px solid rgba(255,255,255,.12);pointer-events:none;}
+
+/* Sort badge on card */
+.card-sort-badge{position:absolute;top:10px;right:10px;z-index:5;padding:3px 8px;border-radius:8px;font-size:10px;font-weight:700;letter-spacing:.5px;pointer-events:none;}
+.card-sort-badge.new{background:rgba(23,184,184,.85);color:#fff;}
+.card-sort-badge.top{background:rgba(245,197,66,.85);color:#1e2229;}
+.card-sort-badge.trending{background:rgba(224,92,106,.85);color:#fff;}
+.card-sort-badge.random{background:rgba(46,207,138,.85);color:#1e2229;}
+
+/* Timestamp badge */
+.ts-badge{position:absolute;bottom:10px;right:10px;z-index:5;background:rgba(0,0,0,.65);color:rgba(255,255,255,.7);font-size:9px;font-weight:600;padding:3px 7px;border-radius:6px;pointer-events:none;display:flex;align-items:center;gap:4px;}
+.ts-badge i{font-size:8px;opacity:.7;}
+
 .vid-controls{position:absolute;inset:0;z-index:4;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s;pointer-events:none;}
 .vid-controls.show{opacity:1;pointer-events:auto;}
 .vid-play-btn{width:56px;height:56px;border-radius:50%;background:rgba(23,184,184,.85);border:none;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:22px;touch-action:manipulation;box-shadow:0 4px 20px rgba(0,0,0,.5);}
@@ -127,10 +156,16 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .vid-progress{position:absolute;bottom:0;left:0;right:0;z-index:5;height:3px;background:rgba(255,255,255,.12);display:none;}
 .vid-progress.show{display:block;}
 .vid-progress-bar{height:100%;background:var(--accent);width:0%;transition:width .5s linear;}
+
 .meme-info{flex-shrink:0;padding:9px 13px 12px;background:linear-gradient(to bottom,rgba(30,34,41,1),rgba(30,34,41,.92));border-bottom:1px solid var(--border);}
 .meme-meta{font-size:10px;color:var(--muted);display:flex;align-items:center;gap:5px;flex-wrap:wrap;margin-bottom:4px;}
 .meme-meta .dot{opacity:.3;}
+.meme-meta .ts{color:var(--muted);font-size:10px;display:flex;align-items:center;gap:3px;}
+.meme-meta .ts i{font-size:9px;opacity:.6;}
+.meme-meta .score-highlight{color:var(--yellow);font-weight:700;}
+.meme-meta .trend-highlight{color:var(--red);font-weight:700;}
 .meme-title{font-size:13px;font-weight:600;line-height:1.4;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+
 .meme-actions{flex-shrink:0;padding:10px 13px 14px;background:linear-gradient(to top,rgba(30,34,41,1),rgba(30,34,41,.92));border-top:1px solid var(--border);display:flex;gap:6px;flex-wrap:wrap;}
 .maction{display:flex;align-items:center;gap:4px;padding:7px 13px;border-radius:20px;border:none;font-family:inherit;font-size:12px;font-weight:600;cursor:pointer;touch-action:manipulation;transition:transform .1s,opacity .15s;-webkit-user-select:none;user-select:none;}
 .maction:active{transform:scale(.92);opacity:.85;}
@@ -140,6 +175,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .maction.cmt{background:var(--card);color:var(--fg);border:1px solid var(--border);}
 .maction.save{background:var(--card);color:var(--fg);border:1px solid var(--border);}
 .maction.save.saved{color:var(--accent2);border-color:var(--accent2);}
+
 .feed-state{height:100%;flex-shrink:0;scroll-snap-align:start;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:30px;color:var(--muted);font-size:14px;text-align:center;}
 .feed-state i{font-size:38px;opacity:.22;}
 .retry-btn{margin-top:4px;padding:9px 22px;background:var(--accent);color:#fff;border:none;border-radius:20px;font-family:inherit;font-size:13px;font-weight:700;cursor:pointer;touch-action:manipulation;}
@@ -165,10 +201,6 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 .pop-chips{display:flex;flex-wrap:wrap;gap:6px;}
 .pop-chip{padding:5px 11px;border-radius:14px;background:var(--card);border:1px solid var(--border);font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;touch-action:manipulation;transition:all .15s;}
 .pop-chip:active{border-color:var(--accent);color:var(--accent);background:var(--accent-dim);}
-
-/* Admin subreddits banner */
-.admin-banner{flex-shrink:0;padding:5px 12px;background:rgba(23,184,184,.08);border-bottom:1px solid rgba(23,184,184,.2);display:flex;align-items:center;gap:6px;font-size:11px;color:var(--accent);font-weight:600;}
-.admin-banner i{font-size:10px;}
 
 /* Chat */
 .chat-header{flex-shrink:0;background:#1a1d24;border-bottom:1px solid var(--border);padding:8px 12px;}
@@ -269,8 +301,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 </head>
 <body>
 <div class="ambient" aria-hidden="true">
-  <div class="orb orb-1"></div>
-  <div class="orb orb-2"></div>
+  <div class="orb orb-1"></div><div class="orb orb-2"></div>
 </div>
 <div id="toasts" aria-live="polite"></div>
 
@@ -305,11 +336,9 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
       <span class="pop-chip" data-s="PrequelMemes">r/PrequelMemes</span>
       <span class="pop-chip" data-s="shitposting">r/shitposting</span>
       <span class="pop-chip" data-s="surrealmemes">r/surrealmemes</span>
-      <span class="pop-chip" data-s="technicallythetruth">r/TechTruth</span>
       <span class="pop-chip" data-s="lotrmemes">r/lotrmemes</span>
       <span class="pop-chip" data-s="ProgrammerHumor">r/ProgrammerHumor</span>
       <span class="pop-chip" data-s="cursedcomments">r/cursedcomments</span>
-      <span class="pop-chip" data-s="teenagers">r/teenagers</span>
       <span class="pop-chip" data-s="me_irl">r/me_irl</span>
     </div>
   </div>
@@ -348,12 +377,30 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
 <div class="app">
   <div class="panels">
 
-    <!-- Feed panel -->
+    <!-- Feed -->
     <section class="panel on" id="p-feed">
       <div class="feed-top-bar">
         <div class="subs-row" id="subsRow">
           <button class="add-sub-btn" id="openAddSub">
             <i class="fa-solid fa-plus"></i>
+          </button>
+        </div>
+        <!-- Sort row -->
+        <div class="sort-row" id="sortRow">
+          <button class="sort-chip on" data-sort="hot">
+            <i class="fa-solid fa-fire"></i> Hot
+          </button>
+          <button class="sort-chip" data-sort="new">
+            <i class="fa-solid fa-clock"></i> Newest
+          </button>
+          <button class="sort-chip" data-sort="top">
+            <i class="fa-solid fa-trophy"></i> Top
+          </button>
+          <button class="sort-chip" data-sort="trending">
+            <i class="fa-solid fa-arrow-trend-up"></i> Trending
+          </button>
+          <button class="sort-chip" data-sort="random">
+            <i class="fa-solid fa-shuffle"></i> Random
           </button>
         </div>
       </div>
@@ -368,7 +415,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
       </div>
     </section>
 
-    <!-- Chat panel -->
+    <!-- Chat -->
     <section class="panel" id="p-chat">
       <div class="chat-header">
         <div class="chat-header-top">
@@ -399,7 +446,7 @@ body{font-family:'Space Grotesk',sans-serif;background:var(--bg);color:var(--fg)
       </div>
     </section>
 
-    <!-- Saved panel -->
+    <!-- Saved -->
     <section class="panel" id="p-saved">
       <div class="saved-header">
         <h2><i class="fa-solid fa-bookmark"></i> Saved Memes</h2>
@@ -448,18 +495,36 @@ const fbApp = initializeApp({
   appId:"1:444149549078:web:50677ecdce29852ab94d37"
 });
 const db = getDatabase(fbApp);
-const chatRef = ref(db, "memeVault_chat");
-const globalSubsRef = ref(db, "memeVault_global_subs");
+const chatRef = ref(db,"memeVault_chat");
+const globalSubsRef = ref(db,"memeVault_global_subs");
+
+/* ══════════════════════════════════════════════
+   SORT MODES
+   hot      → Reddit hot endpoint (default)
+   new      → Reddit new endpoint — newest first by created_utc
+   top      → Reddit top endpoint — sorted by all-time score
+   trending → Reddit hot + we compute score/hour ourselves
+   random   → We fetch hot then shuffle locally
+══════════════════════════════════════════════ */
+const SORT_MODES = {
+  hot:      { label:"Hot",      icon:"fa-fire",           endpoint:"hot",  param:"",          badge:null },
+  new:      { label:"Newest",   icon:"fa-clock",          endpoint:"new",  param:"",          badge:"new" },
+  top:      { label:"Top",      icon:"fa-trophy",         endpoint:"top",  param:"&t=all",    badge:"top" },
+  trending: { label:"Trending", icon:"fa-arrow-trend-up", endpoint:"hot",  param:"",          badge:"trending" },
+  random:   { label:"Random",   icon:"fa-shuffle",        endpoint:"hot",  param:"",          badge:"random" },
+};
 
 /* ── State ── */
 let username = localStorage.getItem("mv_user") || "";
 let seenIds = new Set(JSON.parse(localStorage.getItem("mv_seen6") || "[]"));
 let saved = new Map(JSON.parse(localStorage.getItem("mv_saved2") || "[]"));
-let subreddits = JSON.parse(localStorage.getItem("mv_subs") || "null") || ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
+let subreddits = JSON.parse(localStorage.getItem("mv_subs") || "null") ||
+  ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
 let adminSubreddits = [];
 let usingAdminSubs = false;
 const feedCursors = {};
 let feedRR = 0, feedFetching = false, currentSub = "all";
+let currentSort = "hot";
 let searchQuery = "", searchAfter = "", searchFetching = false, searchExhausted = false;
 let unreadCount = 0, chatOpen = false, firstLoad = true;
 let onlineUsers = {};
@@ -467,847 +532,864 @@ let srchSentinelEl = null;
 
 /* ── DOM ── */
 const $id = id => document.getElementById(id);
-const $uOverlay = $id("uOverlay"), $uInput = $id("uInput"), $uGo = $id("uGo");
-const $feedScroll = $id("feedScroll"), $feedInit = $id("feedInitState");
-const $subsRow = $id("subsRow"), $openAddSub = $id("openAddSub");
-const $addModal = $id("addSubModal"), $closeModal = $id("closeModal");
-const $subInput = $id("subInput"), $subAddBtn = $id("subAddBtn");
-const $sheetBg = $id("sheetBg"), $sheet = $id("sheet");
-const $sheetBody = $id("sheetBody"), $sheetCount = $id("sheetCount"), $sheetX = $id("sheetX");
-const $chatMsgs = $id("chatMsgs"), $chatEmpty = $id("chatEmpty");
-const $chatIn = $id("chatIn"), $chatSend = $id("chatSend");
-const $toasts = $id("toasts");
-const $searchOverlay = $id("searchOverlay"), $searchInput = $id("searchInput");
-const $searchScroll = $id("searchScroll"), $searchBack = $id("searchBack");
-const $searchClear = $id("searchClearBtn"), $openSearch = $id("openSearchBtn");
-const $feedNavBtn = $id("feedNavBtn"), $chatNavBtn = $id("chatNavBtn");
-const $savedNavBtn = $id("savedNavBtn"), $savedPanel = $id("savedPanel");
-const $savedCount = $id("savedCount");
-const $pfeed = $id("p-feed");
-const $onlineStrip = $id("onlineStrip"), $onlineCount = $id("onlineCount");
-const $newMsgBanner = $id("newMsgBanner"), $newMsgText = $id("newMsgText");
-const $adminBanner = $id("adminBanner"), $adminBannerText = $id("adminBannerText");
+const $uOverlay=$id("uOverlay"), $uInput=$id("uInput"), $uGo=$id("uGo");
+const $feedScroll=$id("feedScroll"), $feedInit=$id("feedInitState");
+const $subsRow=$id("subsRow"), $openAddSub=$id("openAddSub");
+const $addModal=$id("addSubModal"), $closeModal=$id("closeModal");
+const $subInput=$id("subInput"), $subAddBtn=$id("subAddBtn");
+const $sheetBg=$id("sheetBg"), $sheet=$id("sheet");
+const $sheetBody=$id("sheetBody"), $sheetCount=$id("sheetCount"), $sheetX=$id("sheetX");
+const $chatMsgs=$id("chatMsgs"), $chatEmpty=$id("chatEmpty");
+const $chatIn=$id("chatIn"), $chatSend=$id("chatSend");
+const $toasts=$id("toasts");
+const $searchOverlay=$id("searchOverlay"), $searchInput=$id("searchInput");
+const $searchScroll=$id("searchScroll"), $searchBack=$id("searchBack");
+const $searchClear=$id("searchClearBtn"), $openSearch=$id("openSearchBtn");
+const $feedNavBtn=$id("feedNavBtn"), $chatNavBtn=$id("chatNavBtn");
+const $savedNavBtn=$id("savedNavBtn"), $savedPanel=$id("savedPanel");
+const $savedCount=$id("savedCount");
+const $pfeed=$id("p-feed");
+const $onlineStrip=$id("onlineStrip"), $onlineCount=$id("onlineCount");
+const $newMsgBanner=$id("newMsgBanner"), $newMsgText=$id("newMsgText");
+const $adminBanner=$id("adminBanner"), $adminBannerText=$id("adminBannerText");
+const $sortRow=$id("sortRow");
 
 /* ── Helpers ── */
-function esc(s) { return String(s ?? "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;"); }
-function throttle(fn, ms) { let l = 0; return (...a) => { const n = Date.now(); if (n - l >= ms) { l = n; fn(...a); } }; }
-function debounce(fn, ms) { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
-function toast(msg, type = "") {
-  const el = document.createElement("div");
-  el.className = "toast " + type;
-  el.textContent = msg;
-  $toasts.appendChild(el);
-  setTimeout(() => el.remove(), 2500);
+function esc(s){return String(s??"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;").replace(/"/g,"&quot;");}
+function throttle(fn,ms){let l=0;return(...a)=>{const n=Date.now();if(n-l>=ms){l=n;fn(...a);}};}
+function debounce(fn,ms){let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms);};}
+function toast(msg,type=""){
+  const el=document.createElement("div");
+  el.className="toast "+type;el.textContent=msg;
+  $toasts.appendChild(el);setTimeout(()=>el.remove(),2500);
 }
-function saveSeen() {
-  const a = [...seenIds];
-  if (a.length > 2000) seenIds = new Set(a.slice(-2000));
-  localStorage.setItem("mv_seen6", JSON.stringify([...seenIds]));
+function saveSeen(){
+  const a=[...seenIds];
+  if(a.length>2000)seenIds=new Set(a.slice(-2000));
+  localStorage.setItem("mv_seen6",JSON.stringify([...seenIds]));
 }
-function saveSubs() { localStorage.setItem("mv_subs", JSON.stringify(subreddits)); }
-function saveSaved() { localStorage.setItem("mv_saved2", JSON.stringify([...saved])); }
-function fmtN(n) { return n >= 1000 ? (n / 1000).toFixed(1) + "k" : String(n || 0); }
-function fmtT(ts) { return ts ? new Date(ts).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }) : ""; }
-function relTime(utc) {
-  if (!utc) return "";
-  const s = Math.floor(Date.now() / 1000 - utc);
-  if (s < 60) return "just now";
-  if (s < 3600) return Math.floor(s / 60) + "m ago";
-  if (s < 86400) return Math.floor(s / 3600) + "h ago";
-  return Math.floor(s / 86400) + "d ago";
+function saveSubs(){localStorage.setItem("mv_subs",JSON.stringify(subreddits));}
+function saveSaved(){localStorage.setItem("mv_saved2",JSON.stringify([...saved]));}
+function fmtN(n){return n>=1000?(n/1000).toFixed(1)+"k":String(n||0);}
+function fmtT(ts){return ts?new Date(ts).toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"}):"";} 
+
+/* ══════════════════════════════════════════════
+   TIMESTAMP FORMATTING
+══════════════════════════════════════════════ */
+function relTime(utc){
+  if(!utc)return"";
+  const s=Math.floor(Date.now()/1000-utc);
+  if(s<60)return"just now";
+  if(s<3600)return Math.floor(s/60)+"m ago";
+  if(s<86400)return Math.floor(s/3600)+"h ago";
+  if(s<604800)return Math.floor(s/86400)+"d ago";
+  if(s<2592000)return Math.floor(s/604800)+"w ago";
+  if(s<31536000)return Math.floor(s/2592000)+"mo ago";
+  return Math.floor(s/31536000)+"y ago";
+}
+function fmtDate(utc){
+  if(!utc)return"";
+  return new Date(utc*1000).toLocaleDateString([],{month:"short",day:"numeric",year:"numeric"});
+}
+/* Votes per hour — trending score */
+function trendScore(score,created_utc){
+  if(!created_utc)return score;
+  const ageHours=Math.max((Date.now()/1000-created_utc)/3600,0.1);
+  return Math.round(score/ageHours);
 }
 
-/* ── Admin subreddits from Firebase ── */
-onValue(globalSubsRef, snap => {
-  const adminData = [];
-  snap.forEach(child => {
-    const val = child.val();
-    if (val?.name) adminData.push(val);
-  });
-
-  if (adminData.length > 0) {
-    // Sort pinned first
-    adminData.sort((a, b) => {
-      if (a.pinned && !b.pinned) return -1;
-      if (!a.pinned && b.pinned) return 1;
-      return (a.addedAt || 0) - (b.addedAt || 0);
+/* ── Admin subreddits ── */
+onValue(globalSubsRef,snap=>{
+  const adminData=[];
+  snap.forEach(child=>{const val=child.val();if(val?.name)adminData.push(val);});
+  if(adminData.length>0){
+    adminData.sort((a,b)=>{
+      if(a.pinned&&!b.pinned)return -1;
+      if(!a.pinned&&b.pinned)return 1;
+      return(a.addedAt||0)-(b.addedAt||0);
     });
-    adminSubreddits = adminData.map(s => s.name);
-    usingAdminSubs = true;
-
-    // Update subreddits list
-    subreddits = [...adminSubreddits];
-
-    // Show admin banner
-    $adminBanner.style.display = "flex";
-    $adminBannerText.textContent = `${adminSubreddits.length} subreddits curated by MemeVault`;
-
-    // Re-render chips
+    adminSubreddits=adminData.map(s=>s.name);
+    usingAdminSubs=true;
+    subreddits=[...adminSubreddits];
+    $adminBanner.style.display="flex";
+    $adminBannerText.textContent=`${adminSubreddits.length} subreddits curated by MemeVault`;
     renderChips();
-
-    toast("Subreddits updated by admin 🛡️", "info");
-  } else {
-    usingAdminSubs = false;
-    $adminBanner.style.display = "none";
-    // Fall back to local subs
-    subreddits = JSON.parse(localStorage.getItem("mv_subs") || "null") ||
-      ["memes", "dankmemes", "me_irl", "wholesomememes", "ProgrammerHumor"];
+    toast("Subreddits updated 🛡️","info");
+  }else{
+    usingAdminSubs=false;
+    $adminBanner.style.display="none";
+    subreddits=JSON.parse(localStorage.getItem("mv_subs")||"null")||
+      ["memes","dankmemes","me_irl","wholesomememes","ProgrammerHumor"];
     renderChips();
   }
 });
 
 /* ── Media resolution ── */
-function resolveMedia(d) {
-  const direct = (d.url_overridden_by_dest || d.url || "").replace(/&amp;/g, "&");
-  const imgs = d.preview?.images?.[0];
-  const prevSrc = imgs?.source?.url?.replace(/&amp;/g, "&") || "";
-  const mp4Var = imgs?.variants?.mp4?.source?.url?.replace(/&amp;/g, "&") || "";
-  const gifVar = imgs?.variants?.gif?.source?.url?.replace(/&amp;/g, "&") || "";
-  const redditVid = d.media?.reddit_video;
-  const vidFallback = redditVid?.fallback_url?.replace(/&amp;/g, "&") || "";
-  if (d.is_video && vidFallback) return { url: vidFallback, type: "video", label: "VID" };
-  if (direct.endsWith(".gifv")) return { url: direct.replace(".gifv", ".mp4"), type: "video", label: "GIF" };
-  if (mp4Var) return { url: mp4Var, type: "video", label: "GIF" };
-  if (direct.endsWith(".mp4") || direct.includes("v.redd.it")) return { url: direct, type: "video", label: "VID" };
-  if (/\.gif($|\?)/i.test(direct)) return { url: direct, type: "img", label: "GIF" };
-  if (gifVar) return { url: gifVar, type: "img", label: "GIF" };
-  if (prevSrc && prevSrc.startsWith("http")) return { url: prevSrc, type: "img", label: null };
-  if (/\.(jpg|jpeg|png|webp)/i.test(direct) && direct.startsWith("http")) return { url: direct, type: "img", label: null };
+function resolveMedia(d){
+  const direct=(d.url_overridden_by_dest||d.url||"").replace(/&amp;/g,"&");
+  const imgs=d.preview?.images?.[0];
+  const prevSrc=imgs?.source?.url?.replace(/&amp;/g,"&")||"";
+  const mp4Var=imgs?.variants?.mp4?.source?.url?.replace(/&amp;/g,"&")||"";
+  const gifVar=imgs?.variants?.gif?.source?.url?.replace(/&amp;/g,"&")||"";
+  const redditVid=d.media?.reddit_video;
+  const vidFallback=redditVid?.fallback_url?.replace(/&amp;/g,"&")||"";
+  if(d.is_video&&vidFallback)return{url:vidFallback,type:"video",label:"VID"};
+  if(direct.endsWith(".gifv"))return{url:direct.replace(".gifv",".mp4"),type:"video",label:"GIF"};
+  if(mp4Var)return{url:mp4Var,type:"video",label:"GIF"};
+  if(direct.endsWith(".mp4")||direct.includes("v.redd.it"))return{url:direct,type:"video",label:"VID"};
+  if(/\.gif($|\?)/i.test(direct))return{url:direct,type:"img",label:"GIF"};
+  if(gifVar)return{url:gifVar,type:"img",label:"GIF"};
+  if(prevSrc&&prevSrc.startsWith("http"))return{url:prevSrc,type:"img",label:null};
+  if(/\.(jpg|jpeg|png|webp)/i.test(direct)&&direct.startsWith("http"))return{url:direct,type:"img",label:null};
   return null;
 }
-function isValid(d) { return d && !d.over_18 && !d.stickied && !!resolveMedia(d); }
-function toMeme(d) {
-  const m = resolveMedia(d);
-  return {
-    id: d.id, title: d.title || "Untitled",
-    mediaUrl: m.url, mediaType: m.type, mediaLabel: m.label,
-    sub: d.subreddit || "", score: d.score || 0,
-    numCmt: d.num_comments || 0, permalink: d.permalink || "",
-    thumbnail: d.thumbnail || ""
+function isValid(d){return d&&!d.over_18&&!d.stickied&&!!resolveMedia(d);}
+function toMeme(d){
+  const m=resolveMedia(d);
+  return{
+    id:d.id,
+    title:d.title||"Untitled",
+    mediaUrl:m.url,mediaType:m.type,mediaLabel:m.label,
+    sub:d.subreddit||"",
+    score:d.score||0,
+    numCmt:d.num_comments||0,
+    permalink:d.permalink||"",
+    thumbnail:d.thumbnail||"",
+    /* ── Timestamps ── */
+    created_utc:d.created_utc||0,
+    /* ── Trending score (votes/hour) ── */
+    trendScore:trendScore(d.score||0,d.created_utc||0)
   };
 }
 
 /* ── Proxies ── */
-const PROXIES = [
-  u => u,
-  u => `https://corsproxy.io/?${encodeURIComponent(u)}`,
-  u => `https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
-  u => `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
+const PROXIES=[
+  u=>u,
+  u=>`https://corsproxy.io/?${encodeURIComponent(u)}`,
+  u=>`https://api.allorigins.win/raw?url=${encodeURIComponent(u)}`,
+  u=>`https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(u)}`,
 ];
-let proxyOK = 0;
-async function redditFetch(url) {
-  for (let i = proxyOK; i < PROXIES.length; i++) {
-    try {
-      const res = await fetch(PROXIES[i](url), {
-        headers: { Accept: "application/json" },
-        signal: AbortSignal.timeout(10000)
+let proxyOK=0;
+async function redditFetch(url){
+  for(let i=proxyOK;i<PROXIES.length;i++){
+    try{
+      const res=await fetch(PROXIES[i](url),{
+        headers:{Accept:"application/json"},
+        signal:AbortSignal.timeout(10000)
       });
-      if (!res.ok) throw new Error("HTTP " + res.status);
-      const json = await res.json();
-      proxyOK = i;
-      return json;
-    } catch (e) {
-      console.warn(`proxy${i}:`, e.message);
-      if (i === PROXIES.length - 1) throw e;
-    }
+      if(!res.ok)throw new Error("HTTP "+res.status);
+      const json=await res.json();proxyOK=i;return json;
+    }catch(e){console.warn(`proxy${i}:`,e.message);if(i===PROXIES.length-1)throw e;}
   }
 }
 
 /* ── Presence ── */
-function initPresence() {
-  if (!username) return;
-  const key = username.replace(/[.#$[\]]/g, "_");
-  const pRef = ref(db, `memeVault_presence/${key}`);
-  set(pRef, { username, online: true, lastSeen: serverTimestamp() });
+function initPresence(){
+  if(!username)return;
+  const key=username.replace(/[.#$[\]]/g,"_");
+  const pRef=ref(db,`memeVault_presence/${key}`);
+  set(pRef,{username,online:true,lastSeen:serverTimestamp()});
   onDisconnect(pRef).remove();
-  onValue(ref(db, "memeVault_presence"), snap => {
-    onlineUsers = {};
-    snap.forEach(c => { const d = c.val(); if (d?.username) onlineUsers[d.username] = d; });
+  onValue(ref(db,"memeVault_presence"),snap=>{
+    onlineUsers={};
+    snap.forEach(c=>{const d=c.val();if(d?.username)onlineUsers[d.username]=d;});
     renderOnline();
   });
 }
-function renderOnline() {
-  const users = Object.values(onlineUsers);
-  $onlineCount.textContent = `${users.length} online`;
-  $onlineStrip.querySelectorAll(".online-user-wrap").forEach(e => e.remove());
-  const frag = document.createDocumentFragment();
-  users.slice(0, 10).forEach(u => {
-    const w = document.createElement("div"); w.className = "online-user-wrap";
-    const av = document.createElement("div"); av.className = "online-avatar"; av.textContent = u.username[0].toUpperCase();
-    const nm = document.createElement("div"); nm.className = "online-name"; nm.textContent = u.username;
-    w.appendChild(av); w.appendChild(nm); frag.appendChild(w);
+function renderOnline(){
+  const users=Object.values(onlineUsers);
+  $onlineCount.textContent=`${users.length} online`;
+  $onlineStrip.querySelectorAll(".online-user-wrap").forEach(e=>e.remove());
+  const frag=document.createDocumentFragment();
+  users.slice(0,10).forEach(u=>{
+    const w=document.createElement("div");w.className="online-user-wrap";
+    const av=document.createElement("div");av.className="online-avatar";av.textContent=u.username[0].toUpperCase();
+    const nm=document.createElement("div");nm.className="online-name";nm.textContent=u.username;
+    w.appendChild(av);w.appendChild(nm);frag.appendChild(w);
   });
   $onlineStrip.appendChild(frag);
 }
 
-/* ── New message banner ── */
-function isAtBottom() { return $chatMsgs.scrollHeight - $chatMsgs.scrollTop - $chatMsgs.clientHeight < 80; }
-$chatMsgs.addEventListener("scroll", throttle(() => {
-  if (isAtBottom()) { hideBanner(); unreadCount = 0; clearNavBadge(); }
-}, 100));
-function showBanner(n) { $newMsgText.textContent = n === 1 ? "1 new message" : `${n} new messages`; $newMsgBanner.classList.remove("hidden"); }
-function hideBanner() { $newMsgBanner.classList.add("hidden"); }
-$newMsgBanner.addEventListener("click", () => {
-  $chatMsgs.scrollTo({ top: $chatMsgs.scrollHeight, behavior: "smooth" });
-  hideBanner(); unreadCount = 0; clearNavBadge();
+/* ── Chat banner ── */
+function isAtBottom(){return $chatMsgs.scrollHeight-$chatMsgs.scrollTop-$chatMsgs.clientHeight<80;}
+$chatMsgs.addEventListener("scroll",throttle(()=>{
+  if(isAtBottom()){hideBanner();unreadCount=0;clearNavBadge();}
+},100));
+function showBanner(n){$newMsgText.textContent=n===1?"1 new message":`${n} new messages`;$newMsgBanner.classList.remove("hidden");}
+function hideBanner(){$newMsgBanner.classList.add("hidden");}
+$newMsgBanner.addEventListener("click",()=>{
+  $chatMsgs.scrollTo({top:$chatMsgs.scrollHeight,behavior:"smooth"});
+  hideBanner();unreadCount=0;clearNavBadge();
 });
-function setNavBadge(n) {
-  let b = $chatNavBtn.querySelector(".nav-badge");
-  if (!b) { b = document.createElement("span"); b.className = "nav-badge"; $chatNavBtn.appendChild(b); }
-  b.textContent = n > 99 ? "99+" : String(n);
+function setNavBadge(n){
+  let b=$chatNavBtn.querySelector(".nav-badge");
+  if(!b){b=document.createElement("span");b.className="nav-badge";$chatNavBtn.appendChild(b);}
+  b.textContent=n>99?"99+":String(n);
 }
-function clearNavBadge() { const b = $chatNavBtn.querySelector(".nav-badge"); if (b) b.remove(); }
+function clearNavBadge(){const b=$chatNavBtn.querySelector(".nav-badge");if(b)b.remove();}
 
 /* ── Username ── */
-function initUser() { if (username) { $uOverlay.classList.add("gone"); start(); } else $uInput.focus(); }
-function submitUser() {
-  const v = $uInput.value.trim();
-  if (!v) { $uInput.style.borderColor = "var(--red)"; setTimeout(() => $uInput.style.borderColor = "", 1200); return; }
-  username = v; localStorage.setItem("mv_user", username);
-  $uOverlay.classList.add("gone"); toast("Welcome, " + username + " 🔥", "ok"); start();
+function initUser(){if(username){$uOverlay.classList.add("gone");start();}else $uInput.focus();}
+function submitUser(){
+  const v=$uInput.value.trim();
+  if(!v){$uInput.style.borderColor="var(--red)";setTimeout(()=>$uInput.style.borderColor="",1200);return;}
+  username=v;localStorage.setItem("mv_user",username);
+  $uOverlay.classList.add("gone");toast("Welcome, "+username+" 🔥","ok");start();
 }
-$uGo.addEventListener("click", submitUser);
-$uInput.addEventListener("keydown", e => { if (e.key === "Enter") submitUser(); });
+$uGo.addEventListener("click",submitUser);
+$uInput.addEventListener("keydown",e=>{if(e.key==="Enter")submitUser();});
 
 /* ── Nav ── */
-const $navBtns = document.querySelectorAll(".nav-btn[data-tab]");
-const $panels = document.querySelectorAll(".panel");
-$navBtns.forEach(btn => {
-  btn.addEventListener("click", () => {
-    const tab = btn.dataset.tab;
-    if (tab === "feed" && btn.classList.contains("on")) { refreshFeed(btn); return; }
-    document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("on"));
-    $panels.forEach(p => p.classList.remove("on"));
+const $navBtns=document.querySelectorAll(".nav-btn[data-tab]");
+const $panels=document.querySelectorAll(".panel");
+$navBtns.forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    const tab=btn.dataset.tab;
+    if(tab==="feed"&&btn.classList.contains("on")){refreshFeed(btn);return;}
+    document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("on"));
+    $panels.forEach(p=>p.classList.remove("on"));
     btn.classList.add("on");
-    document.getElementById("p-" + tab).classList.add("on");
-    if (tab === "chat") {
-      chatOpen = true; unreadCount = 0; clearNavBadge(); hideBanner();
-      requestAnimationFrame(() => $chatMsgs.scrollTop = $chatMsgs.scrollHeight);
-    } else {
-      chatOpen = false;
-    }
-    if (tab === "saved") renderSaved();
+    document.getElementById("p-"+tab).classList.add("on");
+    if(tab==="chat"){
+      chatOpen=true;unreadCount=0;clearNavBadge();hideBanner();
+      requestAnimationFrame(()=>$chatMsgs.scrollTop=$chatMsgs.scrollHeight);
+    }else{chatOpen=false;}
+    if(tab==="saved")renderSaved();
   });
 });
 
-function refreshFeed(btn) {
-  if (feedFetching) return;
+function refreshFeed(btn){
+  if(feedFetching)return;
   btn.classList.add("refreshing");
-  btn.addEventListener("animationend", () => btn.classList.remove("refreshing"), { once: true });
-  const flash = document.createElement("div");
-  flash.className = "feed-refresh-flash";
-  $pfeed.appendChild(flash);
-  flash.addEventListener("animationend", () => flash.remove(), { once: true });
-  [...$feedScroll.querySelectorAll(".meme-card,.feed-state,.sentinel")].forEach(el => el.remove());
-  Object.keys(feedCursors).forEach(k => delete feedCursors[k]);
-  feedRR = 0;
-  document.querySelectorAll(".media-wrap video").forEach(v => { try { v.pause(); } catch {} });
-  toast("Feed refreshed 🔄", "info");
-  ensureFeedSentinel();
-  fetchFeedBatch();
+  btn.addEventListener("animationend",()=>btn.classList.remove("refreshing"),{once:true});
+  const flash=document.createElement("div");flash.className="feed-refresh-flash";
+  $pfeed.appendChild(flash);flash.addEventListener("animationend",()=>flash.remove(),{once:true});
+  clearFeed();
+  toast("Feed refreshed 🔄","info");
+  ensureFeedSentinel();fetchFeedBatch();
 }
-function switchToChat() {
-  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("on"));
-  $panels.forEach(p => p.classList.remove("on"));
-  $chatNavBtn.classList.add("on");
-  document.getElementById("p-chat").classList.add("on");
-  chatOpen = true; unreadCount = 0; clearNavBadge(); hideBanner();
-  requestAnimationFrame(() => $chatMsgs.scrollTop = $chatMsgs.scrollHeight);
+function clearFeed(){
+  [...$feedScroll.querySelectorAll(".meme-card,.feed-state,.sentinel")].forEach(el=>el.remove());
+  Object.keys(feedCursors).forEach(k=>delete feedCursors[k]);
+  feedRR=0;
+  document.querySelectorAll(".media-wrap video").forEach(v=>{try{v.pause();}catch{}});
+}
+function switchToChat(){
+  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("on"));
+  $panels.forEach(p=>p.classList.remove("on"));
+  $chatNavBtn.classList.add("on");document.getElementById("p-chat").classList.add("on");
+  chatOpen=true;unreadCount=0;clearNavBadge();hideBanner();
+  requestAnimationFrame(()=>$chatMsgs.scrollTop=$chatMsgs.scrollHeight);
+}
+
+/* ══════════════════════════════════════════════
+   SORT CHIPS
+══════════════════════════════════════════════ */
+$sortRow.querySelectorAll(".sort-chip").forEach(chip=>{
+  chip.addEventListener("click",()=>{
+    const sort=chip.dataset.sort;
+    if(sort===currentSort)return;
+    currentSort=sort;
+    $sortRow.querySelectorAll(".sort-chip").forEach(c=>c.classList.remove("on"));
+    chip.classList.add("on");
+    clearFeed();
+    const mode=SORT_MODES[sort];
+    toast(`Sorted by ${mode.label} ${getSortEmoji(sort)}`,"info");
+    ensureFeedSentinel();
+    fetchFeedBatch();
+  });
+});
+function getSortEmoji(sort){
+  return{hot:"🔥",new:"🆕",top:"🏆",trending:"📈",random:"🎲"}[sort]||"";
 }
 
 /* ── Chips ── */
-function renderChips() {
-  const frag = document.createDocumentFragment();
-  frag.appendChild(mkChip("All", "all", false, false));
-  subreddits.forEach(s => {
-    const isAdminSub = usingAdminSubs;
-    // If admin subs, check if pinned
-    let isPinned = false;
-    if (usingAdminSubs) {
-      // find in adminSubreddits raw data via globalSubsRef snapshot - simplified
-      isPinned = false;
-    }
-    frag.appendChild(mkChip("r/" + s, s, !usingAdminSubs && subreddits.length > 1, isPinned));
-  });
-  [...$subsRow.querySelectorAll(".sub-chip")].forEach(c => c.remove());
-  $subsRow.insertBefore(frag, $openAddSub);
+function renderChips(){
+  const frag=document.createDocumentFragment();
+  frag.appendChild(mkChip("All","all",false));
+  subreddits.forEach(s=>frag.appendChild(mkChip("r/"+s,s,!usingAdminSubs&&subreddits.length>1)));
+  [...$subsRow.querySelectorAll(".sub-chip")].forEach(c=>c.remove());
+  $subsRow.insertBefore(frag,$openAddSub);
   syncChips();
-  // Hide/show add button based on admin control
-  $openAddSub.style.display = usingAdminSubs ? "none" : "flex";
+  $openAddSub.style.display=usingAdminSubs?"none":"flex";
 }
-function mkChip(label, val, removable, pinned) {
-  const c = document.createElement("button");
-  c.className = "sub-chip" + (pinned ? " pinned-chip" : "");
-  c.dataset.sub = val;
-  c.textContent = label;
-  if (removable) {
-    const rm = document.createElement("span");
-    rm.className = "rm";
-    rm.textContent = " ×";
-    rm.title = "Remove";
-    rm.addEventListener("click", e => { e.stopPropagation(); removeSub(val); });
-    c.appendChild(rm);
+function mkChip(label,val,removable){
+  const c=document.createElement("button");c.className="sub-chip";c.dataset.sub=val;c.textContent=label;
+  if(removable){
+    const rm=document.createElement("span");rm.className="rm";rm.textContent=" ×";rm.title="Remove";
+    rm.addEventListener("click",e=>{e.stopPropagation();removeSub(val);});c.appendChild(rm);
   }
-  c.addEventListener("click", () => filterSub(val));
-  return c;
+  c.addEventListener("click",()=>filterSub(val));return c;
 }
-function syncChips() {
-  $subsRow.querySelectorAll(".sub-chip").forEach(c => c.classList.toggle("on", c.dataset.sub === currentSub));
-}
-function filterSub(sub) {
-  if (currentSub === sub) return;
-  currentSub = sub;
-  syncChips();
-  let has = false;
-  $feedScroll.querySelectorAll(".meme-card").forEach(c => {
-    const show = sub === "all" || c.dataset.sub === sub;
-    c.style.display = show ? "flex" : "none";
-    if (show) has = true;
+function syncChips(){$subsRow.querySelectorAll(".sub-chip").forEach(c=>c.classList.toggle("on",c.dataset.sub===currentSub));}
+function filterSub(sub){
+  if(currentSub===sub)return;currentSub=sub;syncChips();
+  let has=false;
+  $feedScroll.querySelectorAll(".meme-card").forEach(c=>{
+    const show=sub==="all"||c.dataset.sub===sub;
+    c.style.display=show?"flex":"none";if(show)has=true;
   });
-  if (!has) fetchFeedBatch();
+  if(!has)fetchFeedBatch();
 }
-
-$openAddSub.addEventListener("click", () => { $addModal.classList.add("on"); $subInput.focus(); });
-$closeModal.addEventListener("click", closeAddModal);
-$addModal.addEventListener("click", e => { if (e.target === $addModal) closeAddModal(); });
-function closeAddModal() { $addModal.classList.remove("on"); $subInput.value = ""; }
-function addSub(raw) {
-  const name = raw.trim().replace(/^r\//i, "").replace(/\s+/g, "");
-  if (!name) return;
-  if (subreddits.some(s => s.toLowerCase() === name.toLowerCase())) { toast("Already added", "info"); return; }
-  subreddits.push(name); saveSubs(); renderChips(); closeAddModal();
-  toast("r/" + name + " added!", "ok"); fetchFeedBatch();
+$openAddSub.addEventListener("click",()=>{$addModal.classList.add("on");$subInput.focus();});
+$closeModal.addEventListener("click",closeAddModal);
+$addModal.addEventListener("click",e=>{if(e.target===$addModal)closeAddModal();});
+function closeAddModal(){$addModal.classList.remove("on");$subInput.value="";}
+function addSub(raw){
+  const name=raw.trim().replace(/^r\//i,"").replace(/\s+/g,"");if(!name)return;
+  if(subreddits.some(s=>s.toLowerCase()===name.toLowerCase())){toast("Already added","info");return;}
+  subreddits.push(name);saveSubs();renderChips();closeAddModal();
+  toast("r/"+name+" added!","ok");fetchFeedBatch();
 }
-function removeSub(name) {
-  subreddits = subreddits.filter(s => s !== name);
-  saveSubs();
-  if (currentSub === name) currentSub = "all";
-  renderChips();
-  toast("Removed r/" + name, "info");
+function removeSub(name){
+  subreddits=subreddits.filter(s=>s!==name);saveSubs();
+  if(currentSub===name)currentSub="all";renderChips();
+  toast("Removed r/"+name,"info");
 }
-$subAddBtn.addEventListener("click", () => addSub($subInput.value));
-$subInput.addEventListener("keydown", e => { if (e.key === "Enter") addSub($subInput.value); });
-document.querySelectorAll(".pop-chip").forEach(c => c.addEventListener("click", () => addSub(c.dataset.s)));
+$subAddBtn.addEventListener("click",()=>addSub($subInput.value));
+$subInput.addEventListener("keydown",e=>{if(e.key==="Enter")addSub($subInput.value);});
+document.querySelectorAll(".pop-chip").forEach(c=>c.addEventListener("click",()=>addSub(c.dataset.s)));
 
 /* ── Video player ── */
-function buildVideoEl(src, isGif = false) {
-  const vid = document.createElement("video");
-  vid.src = src; vid.loop = true; vid.muted = true; vid.playsInline = true;
-  vid.setAttribute("playsinline", ""); vid.setAttribute("webkit-playsinline", "");
-  vid.preload = "metadata";
-  if (isGif) vid.autoplay = true;
+function buildVideoEl(src,isGif=false){
+  const vid=document.createElement("video");
+  vid.src=src;vid.loop=true;vid.muted=true;vid.playsInline=true;
+  vid.setAttribute("playsinline","");vid.setAttribute("webkit-playsinline","");
+  vid.preload="metadata";if(isGif)vid.autoplay=true;
   return vid;
 }
-const vidVisIO = new IntersectionObserver(entries => {
-  entries.forEach(entry => {
-    const vid = entry.target;
-    if (entry.isIntersecting) vid.play().catch(() => {});
-    else vid.pause();
+const vidVisIO=new IntersectionObserver(entries=>{
+  entries.forEach(entry=>{
+    const vid=entry.target;
+    if(entry.isIntersecting)vid.play().catch(()=>{});else vid.pause();
   });
-}, { threshold: 0.5 });
+},{threshold:0.5});
 
-/* ── Card builder ── */
-function buildCard(m, mode = "feed") {
-  const card = document.createElement("div");
-  card.className = "meme-card";
-  card.dataset.id = m.id;
-  card.dataset.sub = m.sub;
-  const isVid = m.mediaType === "video";
-  const isGif = m.mediaLabel === "GIF";
-  const label = m.mediaLabel;
-  const isSaved = saved.has(m.id);
+/* ══════════════════════════════════════════════
+   CARD BUILDER — with timestamps + sort badges
+══════════════════════════════════════════════ */
+function buildCard(m,mode="feed"){
+  const card=document.createElement("div");
+  card.className="meme-card";card.dataset.id=m.id;card.dataset.sub=m.sub;
+  const isVid=m.mediaType==="video";
+  const isGif=m.mediaLabel==="GIF";
+  const label=m.mediaLabel;
+  const isSaved=saved.has(m.id);
 
-  card.innerHTML = `
+  /* Sort badge */
+  const sortBadge=SORT_MODES[currentSort]?.badge;
+  const sortBadgeMap={
+    new:{cls:"new",text:"NEW"},
+    top:{cls:"top",text:"TOP"},
+    trending:{cls:"trending",text:"TRENDING"},
+    random:{cls:"random",text:"RANDOM"}
+  };
+  const sb=sortBadgeMap[sortBadge];
+
+  /* Timestamp display */
+  const postAge=relTime(m.created_utc);
+  const postDate=fmtDate(m.created_utc);
+
+  /* Extra meta based on sort */
+  let extraMeta="";
+  if(currentSort==="top"||currentSort==="hot"){
+    extraMeta=`<span class="dot">·</span><span class="score-highlight"><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score)}</span>`;
+  }
+  if(currentSort==="trending"){
+    extraMeta=`<span class="dot">·</span><span class="trend-highlight"><i class="fa-solid fa-arrow-trend-up"></i> ${fmtN(m.trendScore)}/hr</span>`;
+  }
+
+  card.innerHTML=`
     <div class="meme-info">
       <div class="meme-meta">
-        <span>r/${esc(m.sub)}</span><span class="dot">·</span>
-        <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score)}</span><span class="dot">·</span>
+        <span>r/${esc(m.sub)}</span>
+        <span class="dot">·</span>
+        <span class="ts" title="${postDate}">
+          <i class="fa-regular fa-clock"></i>${postAge}
+        </span>
+        <span class="dot">·</span>
         <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt)}</span>
-        ${label ? `<span class="dot">·</span><span style="color:var(--accent);font-weight:700">${label}</span>` : ""}
+        ${extraMeta}
+        ${label?`<span class="dot">·</span><span style="color:var(--accent);font-weight:700">${label}</span>`:""}
       </div>
       <div class="meme-title">${esc(m.title)}</div>
     </div>
     <div class="media-wrap">
       <div class="media-loader"><div class="spin"></div></div>
-      ${label ? `<div class="media-badge">${label}</div>` : ""}
-      ${isVid && !isGif ? `
+      ${label?`<div class="media-badge">${label}</div>`:""}
+      ${sb?`<div class="card-sort-badge ${sb.cls}">${sb.text}</div>`:""}
+      ${m.created_utc&&mode==="feed"?`<div class="ts-badge"><i class="fa-regular fa-clock"></i>${postAge}</div>`:""}
+      ${isVid&&!isGif?`
         <div class="vid-controls" id="vc-${m.id}">
           <button class="vid-play-btn" id="vpb-${m.id}"><i class="fa-solid fa-play"></i></button>
         </div>
         <button class="vid-mute-btn show" id="vmb-${m.id}"><i class="fa-solid fa-volume-xmark"></i></button>
         <div class="vid-progress show"><div class="vid-progress-bar" id="vpbar-${m.id}"></div></div>
-      ` : ""}
+      `:""}
     </div>
     <div class="meme-actions">
-      <button class="maction save ${isSaved ? "saved" : ""}">
-        <i class="fa-${isSaved ? "solid" : "regular"} fa-bookmark"></i>
-        ${isSaved ? "Saved" : "Save"}
+      <button class="maction save ${isSaved?"saved":""}">
+        <i class="fa-${isSaved?"solid":"regular"} fa-bookmark"></i>
+        ${isSaved?"Saved":"Save"}
       </button>
-      <button class="maction cmt"><i class="fa-regular fa-comment"></i> Comments</button>
+      <button class="maction cmt"><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt)}</button>
       <button class="maction share"><i class="fa-solid fa-paper-plane"></i> Send</button>
     </div>`;
 
-  const mediaWrap = card.querySelector(".media-wrap");
-  const loader = card.querySelector(".media-loader");
+  const mediaWrap=card.querySelector(".media-wrap");
+  const loader=card.querySelector(".media-loader");
 
-  const lazyIO = new IntersectionObserver((entries, obs) => {
-    if (!entries[0].isIntersecting) return;
-    obs.disconnect();
-    loadMedia();
-  }, { rootMargin: "0px 0px 100% 0px", threshold: 0 });
+  const lazyIO=new IntersectionObserver((entries,obs)=>{
+    if(!entries[0].isIntersecting)return;obs.disconnect();loadMedia();
+  },{rootMargin:"0px 0px 100% 0px",threshold:0});
   lazyIO.observe(card);
 
-  function loadMedia() {
-    if (isVid) {
-      const vid = buildVideoEl(m.mediaUrl, isGif);
-      vid.addEventListener("loadeddata", () => { vid.classList.add("vis"); loader.classList.add("hide"); }, { once: true });
-      vid.addEventListener("error", () => tryImgFallback(), { once: true });
-      vid.addEventListener("timeupdate", () => {
-        const bar = document.getElementById(`vpbar-${m.id}`);
-        if (bar && vid.duration) bar.style.width = (vid.currentTime / vid.duration * 100) + "%";
+  function loadMedia(){
+    if(isVid){
+      const vid=buildVideoEl(m.mediaUrl,isGif);
+      vid.addEventListener("loadeddata",()=>{vid.classList.add("vis");loader.classList.add("hide");},{once:true});
+      vid.addEventListener("error",()=>tryImgFallback(),{once:true});
+      vid.addEventListener("timeupdate",()=>{
+        const bar=document.getElementById(`vpbar-${m.id}`);
+        if(bar&&vid.duration)bar.style.width=(vid.currentTime/vid.duration*100)+"%";
       });
-      mediaWrap.appendChild(vid);
-      vidVisIO.observe(vid);
-      if (!isGif) {
-        const vc = document.getElementById(`vc-${m.id}`);
-        const vpb = document.getElementById(`vpb-${m.id}`);
-        const vmb = document.getElementById(`vmb-${m.id}`);
-        mediaWrap.addEventListener("click", () => {
-          if (vid.paused) {
-            vid.play().catch(() => {});
-            vc.classList.remove("show");
-            vpb.querySelector("i").className = "fa-solid fa-pause";
-            setTimeout(() => { vc.classList.remove("show"); }, 1500);
-          } else {
-            vid.pause();
-            vc.classList.add("show");
-            vpb.querySelector("i").className = "fa-solid fa-play";
+      mediaWrap.appendChild(vid);vidVisIO.observe(vid);
+      if(!isGif){
+        const vc=document.getElementById(`vc-${m.id}`);
+        const vpb=document.getElementById(`vpb-${m.id}`);
+        const vmb=document.getElementById(`vmb-${m.id}`);
+        mediaWrap.addEventListener("click",()=>{
+          if(vid.paused){
+            vid.play().catch(()=>{});vc.classList.remove("show");
+            vpb.querySelector("i").className="fa-solid fa-pause";
+            setTimeout(()=>{vc.classList.remove("show");},1500);
+          }else{
+            vid.pause();vc.classList.add("show");
+            vpb.querySelector("i").className="fa-solid fa-play";
           }
         });
-        if (vmb) {
-          vmb.addEventListener("click", e => {
-            e.stopPropagation();
-            vid.muted = !vid.muted;
-            vmb.innerHTML = vid.muted
-              ? '<i class="fa-solid fa-volume-xmark"></i>'
-              : '<i class="fa-solid fa-volume-high"></i>';
+        if(vmb){
+          vmb.addEventListener("click",e=>{
+            e.stopPropagation();vid.muted=!vid.muted;
+            vmb.innerHTML=vid.muted
+              ?'<i class="fa-solid fa-volume-xmark"></i>'
+              :'<i class="fa-solid fa-volume-high"></i>';
           });
         }
       }
-    } else {
-      const img = document.createElement("img");
-      img.alt = m.title || "meme"; img.decoding = "async";
-      img.addEventListener("load", () => { img.classList.add("vis"); loader.classList.add("hide"); }, { once: true });
-      img.addEventListener("error", () => {
-        loader.innerHTML = `<div class="media-err"><i class="fa-regular fa-image"></i><span>Could not load</span></div>`;
-      }, { once: true });
-      img.src = m.mediaUrl;
-      mediaWrap.appendChild(img);
+    }else{
+      const img=document.createElement("img");
+      img.alt=m.title||"meme";img.decoding="async";
+      img.addEventListener("load",()=>{img.classList.add("vis");loader.classList.add("hide");},{once:true});
+      img.addEventListener("error",()=>{
+        loader.innerHTML=`<div class="media-err"><i class="fa-regular fa-image"></i><span>Could not load</span></div>`;
+      },{once:true});
+      img.src=m.mediaUrl;mediaWrap.appendChild(img);
     }
   }
 
-  function tryImgFallback() {
-    const img = document.createElement("img");
-    img.alt = m.title || "meme";
-    img.src = m.mediaUrl.replace(".mp4", ".gif").replace(/DASH_\d+/, "DASH_360");
-    img.addEventListener("load", () => { img.classList.add("vis"); loader.classList.add("hide"); }, { once: true });
-    img.addEventListener("error", () => {
-      loader.innerHTML = `<div class="media-err"><i class="fa-regular fa-image"></i><span>Could not load</span></div>`;
-    }, { once: true });
+  function tryImgFallback(){
+    const img=document.createElement("img");img.alt=m.title||"meme";
+    img.src=m.mediaUrl.replace(".mp4",".gif").replace(/DASH_\d+/,"DASH_360");
+    img.addEventListener("load",()=>{img.classList.add("vis");loader.classList.add("hide");},{once:true});
+    img.addEventListener("error",()=>{
+      loader.innerHTML=`<div class="media-err"><i class="fa-regular fa-image"></i><span>Could not load</span></div>`;
+    },{once:true});
     mediaWrap.appendChild(img);
   }
 
-  card.querySelector(".maction.share").addEventListener("click", async function () {
-    await sendMeme(this, m);
-    if (mode === "search") setTimeout(() => switchToChat(), 500);
+  card.querySelector(".maction.share").addEventListener("click",async function(){
+    await sendMeme(this,m);
+    if(mode==="search")setTimeout(()=>switchToChat(),500);
   });
-  card.querySelector(".maction.cmt").addEventListener("click", () => openComments(m.permalink, m.numCmt));
-  card.querySelector(".maction.save").addEventListener("click", function () { toggleSave(this, m); });
-
+  card.querySelector(".maction.cmt").addEventListener("click",()=>openComments(m.permalink,m.numCmt));
+  card.querySelector(".maction.save").addEventListener("click",function(){toggleSave(this,m);});
   return card;
 }
 
-/* ── Feed fetch ── */
-async function fetchFeedBatch() {
-  if (feedFetching) return;
-  feedFetching = true;
-  const pool = currentSub === "all" ? subreddits : [currentSub];
-  let added = 0, tries = 0;
-  const MAX = pool.length * 3;
-  while (added < 5 && tries < MAX) {
-    const sub = pool[feedRR % pool.length]; feedRR++; tries++;
-    const after = feedCursors[sub] || "";
-    const url = `https://www.reddit.com/r/${sub}/hot.json?limit=25&raw_json=1${after ? "&after=" + after : ""}`;
-    try {
-      const json = await redditFetch(url);
-      if (!json?.data) continue;
-      feedCursors[sub] = json.data.after || null;
-      const frag = document.createDocumentFragment();
-      for (const { data: d } of (json.data.children || [])) {
-        if (seenIds.has(d.id) || !isValid(d)) continue;
+/* ══════════════════════════════════════════════
+   FEED FETCH — sort-aware
+══════════════════════════════════════════════ */
+async function fetchFeedBatch(){
+  if(feedFetching)return;feedFetching=true;
+  const mode=SORT_MODES[currentSort];
+  const pool=currentSub==="all"?subreddits:[currentSub];
+  let added=0,tries=0;const MAX=pool.length*3;
+
+  while(added<5&&tries<MAX){
+    const sub=pool[feedRR%pool.length];feedRR++;tries++;
+    const after=feedCursors[sub+":"+currentSort]||"";
+
+    /* Build URL based on sort mode */
+    const url=`https://www.reddit.com/r/${sub}/${mode.endpoint}.json?limit=25&raw_json=1${mode.param}${after?"&after="+after:""}`;
+
+    try{
+      let json=await redditFetch(url);
+      if(!json?.data)continue;
+      feedCursors[sub+":"+currentSort]=json.data.after||null;
+      let posts=(json.data.children||[]).map(c=>c.data).filter(isValid);
+
+      /* ── Apply local sort transforms ── */
+      if(currentSort==="new"){
+        /* Sort by created_utc descending */
+        posts.sort((a,b)=>(b.created_utc||0)-(a.created_utc||0));
+      }else if(currentSort==="top"){
+        /* Sort by score descending */
+        posts.sort((a,b)=>(b.score||0)-(a.score||0));
+      }else if(currentSort==="trending"){
+        /* Sort by votes/hour descending */
+        posts.sort((a,b)=>trendScore(b.score,b.created_utc)-trendScore(a.score,a.created_utc));
+      }else if(currentSort==="random"){
+        /* Fisher-Yates shuffle */
+        for(let i=posts.length-1;i>0;i--){
+          const j=Math.floor(Math.random()*(i+1));
+          [posts[i],posts[j]]=[posts[j],posts[i]];
+        }
+      }
+
+      const frag=document.createDocumentFragment();
+      for(const d of posts){
+        if(seenIds.has(d.id))continue;
         seenIds.add(d.id);
-        frag.appendChild(buildCard(toMeme(d), "feed"));
+        frag.appendChild(buildCard(toMeme(d),"feed"));
         added++;
       }
-      const sentinel = document.getElementById("feed-sentinel");
-      if (sentinel) $feedScroll.insertBefore(frag, sentinel);
-      else $feedScroll.appendChild(frag);
+      const sentinel=document.getElementById("feed-sentinel");
+      if(sentinel)$feedScroll.insertBefore(frag,sentinel);else $feedScroll.appendChild(frag);
       saveSeen();
-    } catch (e) { console.error("Feed:", e); }
+    }catch(e){console.error("Feed:",e);}
   }
-  if ($feedInit?.parentNode) $feedInit.remove();
-  if (added === 0 && !$feedScroll.querySelector(".meme-card")) showFeedError();
-  feedFetching = false;
+
+  if($feedInit?.parentNode)$feedInit.remove();
+  if(added===0&&!$feedScroll.querySelector(".meme-card"))showFeedError();
+  feedFetching=false;
 }
 
-const feedIO = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting && !feedFetching) fetchFeedBatch();
-}, { rootMargin: "0px 0px 200px 0px", threshold: 0 });
+const feedIO=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!feedFetching)fetchFeedBatch();
+},{rootMargin:"0px 0px 200px 0px",threshold:0});
 
-function ensureFeedSentinel() {
-  if (document.getElementById("feed-sentinel")) return;
-  const s = document.createElement("div");
-  s.id = "feed-sentinel"; s.className = "sentinel";
-  s.innerHTML = '<div class="spin" style="opacity:.35"></div>';
-  $feedScroll.appendChild(s);
-  feedIO.observe(s);
+function ensureFeedSentinel(){
+  if(document.getElementById("feed-sentinel"))return;
+  const s=document.createElement("div");s.id="feed-sentinel";s.className="sentinel";
+  s.innerHTML='<div class="spin" style="opacity:.35"></div>';
+  $feedScroll.appendChild(s);feedIO.observe(s);
 }
-function showFeedError() {
-  const el = document.createElement("div"); el.className = "feed-state";
-  el.innerHTML = `<i class="fa-solid fa-triangle-exclamation"></i><span>Couldn't load memes.<br>Try another subreddit.</span><button class="retry-btn" id="retryBtn">🔄 Retry</button>`;
+function showFeedError(){
+  const el=document.createElement("div");el.className="feed-state";
+  el.innerHTML=`<i class="fa-solid fa-triangle-exclamation"></i><span>Couldn't load memes.<br>Try a different sort or subreddit.</span><button class="retry-btn" id="retryBtn">🔄 Retry</button>`;
   $feedScroll.appendChild(el);
-  document.getElementById("retryBtn").addEventListener("click", () => { el.remove(); fetchFeedBatch(); });
+  document.getElementById("retryBtn").addEventListener("click",()=>{el.remove();fetchFeedBatch();});
 }
-$feedScroll.addEventListener("scrollend", () => {
-  $feedScroll.querySelectorAll(".media-wrap video").forEach(vid => {
-    const rect = vid.closest(".meme-card")?.getBoundingClientRect();
-    if (rect) {
-      const visible = rect.top >= 0 && rect.bottom <= window.innerHeight;
-      if (visible) vid.play().catch(() => {}); else vid.pause();
+$feedScroll.addEventListener("scrollend",()=>{
+  $feedScroll.querySelectorAll(".media-wrap video").forEach(vid=>{
+    const rect=vid.closest(".meme-card")?.getBoundingClientRect();
+    if(rect){
+      const visible=rect.top>=0&&rect.bottom<=window.innerHeight;
+      if(visible)vid.play().catch(()=>{});else vid.pause();
     }
   });
-}, { passive: true });
+},{passive:true});
 
 /* ── Search ── */
-$openSearch.addEventListener("click", () => {
+$openSearch.addEventListener("click",()=>{
   $searchOverlay.classList.add("show");
-  requestAnimationFrame(() => $searchInput.focus());
+  requestAnimationFrame(()=>$searchInput.focus());
 });
-$searchBack.addEventListener("click", closeSearch);
-function closeSearch() {
+$searchBack.addEventListener("click",closeSearch);
+function closeSearch(){
   $searchOverlay.classList.remove("show");
-  searchQuery = ""; searchAfter = ""; searchExhausted = false;
-  $searchInput.value = ""; $searchClear.classList.remove("vis");
-  $searchScroll.innerHTML = "";
-  if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
+  searchQuery="";searchAfter="";searchExhausted=false;
+  $searchInput.value="";$searchClear.classList.remove("vis");
+  $searchScroll.innerHTML="";
+  if(srchSentinelEl){srchIO.unobserve(srchSentinelEl);srchSentinelEl=null;}
 }
-const debouncedSearch = debounce(q => startSearch(q), 480);
-$searchInput.addEventListener("input", () => {
-  const q = $searchInput.value.trim();
-  $searchClear.classList.toggle("vis", q.length > 0);
-  if (!q) { resetSearch(); return; }
-  debouncedSearch(q);
+const debouncedSearch=debounce(q=>startSearch(q),480);
+$searchInput.addEventListener("input",()=>{
+  const q=$searchInput.value.trim();
+  $searchClear.classList.toggle("vis",q.length>0);
+  if(!q){resetSearch();return;}debouncedSearch(q);
 });
-$searchClear.addEventListener("click", () => {
-  $searchInput.value = ""; $searchClear.classList.remove("vis"); resetSearch();
-});
-function resetSearch() {
-  searchQuery = ""; searchAfter = ""; searchExhausted = false;
-  $searchScroll.innerHTML = "";
-  if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
+$searchClear.addEventListener("click",()=>{$searchInput.value="";$searchClear.classList.remove("vis");resetSearch();});
+function resetSearch(){
+  searchQuery="";searchAfter="";searchExhausted=false;$searchScroll.innerHTML="";
+  if(srchSentinelEl){srchIO.unobserve(srchSentinelEl);srchSentinelEl=null;}
 }
-function startSearch(q) {
-  if (q === searchQuery) return;
-  searchQuery = q; searchAfter = ""; searchExhausted = false; searchFetching = false;
-  if (srchSentinelEl) { srchIO.unobserve(srchSentinelEl); srchSentinelEl = null; }
-  $searchScroll.innerHTML = `<div class="feed-state"><div class="spin lg"></div><span>Searching...</span></div>`;
+function startSearch(q){
+  if(q===searchQuery)return;
+  searchQuery=q;searchAfter="";searchExhausted=false;searchFetching=false;
+  if(srchSentinelEl){srchIO.unobserve(srchSentinelEl);srchSentinelEl=null;}
+  $searchScroll.innerHTML=`<div class="feed-state"><div class="spin lg"></div><span>Searching...</span></div>`;
   fetchSearchBatch();
 }
-async function fetchSearchBatch() {
-  if (searchFetching || searchExhausted) return;
-  searchFetching = true;
-  const url = `https://www.reddit.com/search.json?q=${encodeURIComponent(searchQuery)}&sort=relevance&limit=25&type=link&raw_json=1` +
-    (searchAfter ? `&after=${searchAfter}` : "");
-  try {
-    const json = await redditFetch(url);
-    const data = json?.data;
-    const init = $searchScroll.querySelector(".feed-state");
-    if (init) init.remove();
-    if (!data?.children?.length) {
-      searchExhausted = true;
-      if (!$searchScroll.querySelector(".meme-card"))
-        $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No results for "<b>${esc(searchQuery)}</b>"</span></div>`;
-      searchFetching = false; return;
+async function fetchSearchBatch(){
+  if(searchFetching||searchExhausted)return;searchFetching=true;
+  const url=`https://www.reddit.com/search.json?q=${encodeURIComponent(searchQuery)}&sort=relevance&limit=25&type=link&raw_json=1`+
+    (searchAfter?`&after=${searchAfter}`:"");
+  try{
+    const json=await redditFetch(url);const data=json?.data;
+    const init=$searchScroll.querySelector(".feed-state");if(init)init.remove();
+    if(!data?.children?.length){
+      searchExhausted=true;
+      if(!$searchScroll.querySelector(".meme-card"))
+        $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No results for "<b>${esc(searchQuery)}</b>"</span></div>`;
+      searchFetching=false;return;
     }
-    searchAfter = data.after || "";
-    if (!searchAfter) searchExhausted = true;
-    const frag = document.createDocumentFragment(); let added = 0;
-    for (const { data: d } of data.children) {
-      if (!isValid(d)) continue;
-      frag.appendChild(buildCard(toMeme(d), "search")); added++;
-    }
-    const ss = document.getElementById("search-sentinel");
-    if (ss) $searchScroll.insertBefore(frag, ss); else $searchScroll.appendChild(frag);
-    if (added === 0 && !$searchScroll.querySelector(".meme-card"))
-      $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No image memes for "<b>${esc(searchQuery)}</b>"</span></div>`;
-    if (!searchExhausted) ensureSrchSentinel();
-  } catch (e) {
-    console.error("Search:", e);
-    const init = $searchScroll.querySelector(".feed-state");
-    if (init) init.remove();
-    if (!$searchScroll.querySelector(".meme-card"))
-      $searchScroll.innerHTML = `<div class="feed-state"><i class="fa-solid fa-triangle-exclamation"></i><span>Search failed.</span></div>`;
+    searchAfter=data.after||"";if(!searchAfter)searchExhausted=true;
+    const frag=document.createDocumentFragment();let added2=0;
+    for(const{data:d}of data.children){if(!isValid(d))continue;frag.appendChild(buildCard(toMeme(d),"search"));added2++;}
+    const ss=document.getElementById("search-sentinel");
+    if(ss)$searchScroll.insertBefore(frag,ss);else $searchScroll.appendChild(frag);
+    if(added2===0&&!$searchScroll.querySelector(".meme-card"))
+      $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-regular fa-face-frown-open"></i><span>No image memes for "<b>${esc(searchQuery)}</b>"</span></div>`;
+    if(!searchExhausted)ensureSrchSentinel();
+  }catch(e){
+    console.error("Search:",e);
+    const init=$searchScroll.querySelector(".feed-state");if(init)init.remove();
+    if(!$searchScroll.querySelector(".meme-card"))
+      $searchScroll.innerHTML=`<div class="feed-state"><i class="fa-solid fa-triangle-exclamation"></i><span>Search failed.</span></div>`;
   }
-  searchFetching = false;
+  searchFetching=false;
 }
-const srchIO = new IntersectionObserver(entries => {
-  if (entries[0].isIntersecting && !searchFetching && !searchExhausted) fetchSearchBatch();
-}, { rootMargin: "0px 0px 200px 0px", threshold: 0 });
-function ensureSrchSentinel() {
-  if (document.getElementById("search-sentinel")) return;
-  const s = document.createElement("div");
-  s.id = "search-sentinel"; s.className = "sentinel";
-  s.innerHTML = '<div class="spin" style="opacity:.35"></div>';
-  $searchScroll.appendChild(s); srchSentinelEl = s; srchIO.observe(s);
+const srchIO=new IntersectionObserver(entries=>{
+  if(entries[0].isIntersecting&&!searchFetching&&!searchExhausted)fetchSearchBatch();
+},{rootMargin:"0px 0px 200px 0px",threshold:0});
+function ensureSrchSentinel(){
+  if(document.getElementById("search-sentinel"))return;
+  const s=document.createElement("div");s.id="search-sentinel";s.className="sentinel";
+  s.innerHTML='<div class="spin" style="opacity:.35"></div>';
+  $searchScroll.appendChild(s);srchSentinelEl=s;srchIO.observe(s);
 }
 
-/* ── Send meme to chat ── */
-async function sendMeme(btn, m) {
-  if (btn.classList.contains("sent")) return;
-  btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>'; btn.disabled = true;
-  try {
-    await push(chatRef, {
-      type: "meme",
-      mediaUrl: m.mediaUrl, mediaType: m.mediaType, mediaLabel: m.mediaLabel || null,
-      title: m.title, sub: m.sub, score: m.score, numCmt: m.numCmt,
-      permalink: m.permalink, username, createdAt: Date.now()
+/* ── Send meme ── */
+async function sendMeme(btn,m){
+  if(btn.classList.contains("sent"))return;
+  btn.innerHTML='<i class="fa-solid fa-spinner fa-spin"></i>';btn.disabled=true;
+  try{
+    await push(chatRef,{
+      type:"meme",
+      mediaUrl:m.mediaUrl,mediaType:m.mediaType,mediaLabel:m.mediaLabel||null,
+      title:m.title,sub:m.sub,score:m.score,numCmt:m.numCmt,
+      permalink:m.permalink,username,createdAt:Date.now(),
+      /* Include post timestamp */
+      postCreatedAt:m.created_utc||null
     });
-    btn.classList.add("sent"); btn.innerHTML = '<i class="fa-solid fa-check"></i> Sent!';
-    toast("Sent to chat 🔥", "ok");
-  } catch {
-    btn.innerHTML = '<i class="fa-solid fa-paper-plane"></i> Send';
-    btn.disabled = false; toast("Send failed", "err");
+    btn.classList.add("sent");btn.innerHTML='<i class="fa-solid fa-check"></i> Sent!';
+    toast("Sent to chat 🔥","ok");
+  }catch{
+    btn.innerHTML='<i class="fa-solid fa-paper-plane"></i> Send';
+    btn.disabled=false;toast("Send failed","err");
   }
 }
 
-/* ── Save / Saved panel ── */
-function toggleSave(btn, m) {
-  if (saved.has(m.id)) {
-    saved.delete(m.id);
-    btn.classList.remove("saved");
-    btn.innerHTML = '<i class="fa-regular fa-bookmark"></i> Save';
-    toast("Removed");
-  } else {
-    saved.set(m.id, {
-      id: m.id, title: m.title, sub: m.sub,
-      mediaUrl: m.mediaUrl, mediaType: m.mediaType,
-      mediaLabel: m.mediaLabel, thumbnail: m.thumbnail,
-      score: m.score, numCmt: m.numCmt, permalink: m.permalink
+/* ── Save ── */
+function toggleSave(btn,m){
+  if(saved.has(m.id)){
+    saved.delete(m.id);btn.classList.remove("saved");
+    btn.innerHTML='<i class="fa-regular fa-bookmark"></i> Save';toast("Removed");
+  }else{
+    saved.set(m.id,{
+      id:m.id,title:m.title,sub:m.sub,
+      mediaUrl:m.mediaUrl,mediaType:m.mediaType,mediaLabel:m.mediaLabel,
+      thumbnail:m.thumbnail,score:m.score,numCmt:m.numCmt,
+      permalink:m.permalink,created_utc:m.created_utc,
+      savedAt:Date.now()
     });
-    btn.classList.add("saved");
-    btn.innerHTML = '<i class="fa-solid fa-bookmark"></i> Saved';
-    toast("Saved! 🔖", "ok");
+    btn.classList.add("saved");btn.innerHTML='<i class="fa-solid fa-bookmark"></i> Saved';
+    toast("Saved! 🔖","ok");
   }
   saveSaved();
-  $savedCount.textContent = saved.size ? `${saved.size} meme${saved.size > 1 ? "s" : ""}` : "";
+  $savedCount.textContent=saved.size?`${saved.size} meme${saved.size>1?"s":""}`:"";
 }
 
-function renderSaved() {
-  $savedCount.textContent = saved.size ? `${saved.size} meme${saved.size > 1 ? "s" : ""}` : "";
-  if (!saved.size) {
-    $savedPanel.innerHTML = `<div class="saved-empty"><i class="fa-regular fa-bookmark"></i><span>No saved memes yet</span></div>`;
+/* ── Saved panel ── */
+function renderSaved(){
+  $savedCount.textContent=saved.size?`${saved.size} meme${saved.size>1?"s":""}`:"";
+  if(!saved.size){
+    $savedPanel.innerHTML=`<div class="saved-empty"><i class="fa-regular fa-bookmark"></i><span>No saved memes yet</span></div>`;
     return;
   }
-  $savedPanel.innerHTML = "";
-  [...saved.values()].reverse().forEach(m => {
-    const item = document.createElement("div"); item.className = "saved-item";
-    const thumb = document.createElement("img"); thumb.className = "saved-thumb";
-    thumb.src = m.thumbnail && m.thumbnail.startsWith("http") ? m.thumbnail : m.mediaUrl;
-    thumb.onerror = () => { thumb.src = ""; thumb.style.background = "var(--bg2)"; };
-    const info = document.createElement("div"); info.className = "saved-info";
-    info.innerHTML = `<div class="saved-title">${esc(m.title)}</div><div class="saved-sub">r/${esc(m.sub)}</div>`;
-    const del = document.createElement("button"); del.className = "saved-del";
-    del.innerHTML = '<i class="fa-solid fa-trash"></i>';
-    del.addEventListener("click", () => {
-      saved.delete(m.id); saveSaved(); renderSaved(); toast("Removed", "");
-    });
-    item.appendChild(thumb); item.appendChild(info); item.appendChild(del);
+  $savedPanel.innerHTML="";
+  [...saved.values()].reverse().forEach(m=>{
+    const item=document.createElement("div");item.className="saved-item";
+    const thumb=document.createElement("img");thumb.className="saved-thumb";
+    thumb.src=m.thumbnail&&m.thumbnail.startsWith("http")?m.thumbnail:m.mediaUrl;
+    thumb.onerror=()=>{thumb.src="";thumb.style.background="var(--bg2)";};
+    const info=document.createElement("div");info.className="saved-info";
+    /* Show post age in saved list */
+    const postAge=m.created_utc?relTime(m.created_utc):"";
+    const savedAgo=m.savedAt?relTime(m.savedAt/1000):"";
+    info.innerHTML=`
+      <div class="saved-title">${esc(m.title)}</div>
+      <div class="saved-sub">r/${esc(m.sub)}${postAge?` · <span style="color:var(--muted)">${postAge}</span>`:""}${savedAgo?` · <span style="color:var(--muted);font-size:9px">saved ${savedAgo}</span>`:""}</div>`;
+    const del=document.createElement("button");del.className="saved-del";
+    del.innerHTML='<i class="fa-solid fa-trash"></i>';
+    del.addEventListener("click",()=>{saved.delete(m.id);saveSaved();renderSaved();toast("Removed","");});
+    item.appendChild(thumb);item.appendChild(info);item.appendChild(del);
     $savedPanel.appendChild(item);
   });
 }
 
 /* ── Comments ── */
-async function openComments(permalink, totalCount) {
-  $sheetBg.classList.add("on"); $sheet.classList.add("on");
-  $sheetCount.textContent = totalCount ? ` · ${fmtN(totalCount)}` : "";
-  $sheetBody.innerHTML = `<div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>`;
-  try {
-    const json = await redditFetch(`https://www.reddit.com${permalink}.json?limit=50&depth=1&raw_json=1`);
-    const kids = json?.[1]?.data?.children || [];
-    const cmts = kids.filter(c => c.kind === "t1" && c.data?.body && c.data.body !== "[deleted]" && c.data.body !== "[removed]");
-    $sheetBody.innerHTML = "";
-    if (!cmts.length) {
-      $sheetBody.innerHTML = `<div class="sheet-empty"><i class="fa-regular fa-comment-slash"></i><span>No comments yet</span></div>`;
+async function openComments(permalink,totalCount){
+  $sheetBg.classList.add("on");$sheet.classList.add("on");
+  $sheetCount.textContent=totalCount?` · ${fmtN(totalCount)}`:"";
+  $sheetBody.innerHTML=`<div class="sheet-loading"><div class="spin"></div><span>Loading...</span></div>`;
+  try{
+    const json=await redditFetch(`https://www.reddit.com${permalink}.json?limit=50&depth=1&raw_json=1`);
+    const kids=json?.[1]?.data?.children||[];
+    const cmts=kids.filter(c=>c.kind==="t1"&&c.data?.body&&c.data.body!=="[deleted]"&&c.data.body!=="[removed]");
+    $sheetBody.innerHTML="";
+    if(!cmts.length){
+      $sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-regular fa-comment-slash"></i><span>No comments yet</span></div>`;
       return;
     }
-    const frag = document.createDocumentFragment();
-    cmts.forEach(c => {
-      const d = c.data;
-      const div = document.createElement("div"); div.className = "cmt-card";
-      const cleanBody = (d.body || "")
-        .replace(/\[([^\]]+)\]\([^)]+\)/g, "$1")
-        .replace(/\*\*([^*]+)\*\*/g, "$1")
-        .replace(/\*([^*]+)\*/g, "$1")
-        .replace(/~~([^~]+)~~/g, "$1")
-        .replace(/^#+\s/gm, "")
-        .replace(/^&gt;\s?/gm, "")
+    const frag=document.createDocumentFragment();
+    cmts.forEach(c=>{
+      const d=c.data;
+      const div=document.createElement("div");div.className="cmt-card";
+      const cleanBody=(d.body||"")
+        .replace(/\[([^\]]+)\]\([^)]+\)/g,"$1")
+        .replace(/\*\*([^*]+)\*\*/g,"$1")
+        .replace(/\*([^*]+)\*/g,"$1")
+        .replace(/~~([^~]+)~~/g,"$1")
+        .replace(/^#+\s/gm,"")
+        .replace(/^&gt;\s?/gm,"")
         .trim();
-      div.innerHTML = `
+      div.innerHTML=`
         <div class="cmt-header">
           <span class="cmt-author">u/${esc(d.author)}</span>
-          <span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score || 0)}</span>
+          <span class="cmt-score"><i class="fa-solid fa-arrow-up"></i> ${fmtN(d.score||0)}</span>
         </div>
         <div class="cmt-body">${esc(cleanBody)}</div>
-        <div class="cmt-time">${relTime(d.created_utc)}</div>`;
-      const urlMatch = (d.body || "").match(/https?:\/\/\S+\.(gif|gifv|mp4|webm)/i);
-      if (urlMatch) {
-        const mUrl = urlMatch[0].replace(".gifv", ".mp4");
-        const isV = /\.(mp4|webm)/i.test(mUrl);
-        const mWrap = document.createElement("div"); mWrap.className = "cmt-media";
-        if (isV) {
-          const v = document.createElement("video");
-          v.src = mUrl; v.autoplay = true; v.loop = true; v.muted = true;
-          v.playsInline = true; v.setAttribute("playsinline", "");
-          mWrap.appendChild(v);
-        } else {
-          const img = document.createElement("img"); img.src = mUrl; img.loading = "lazy"; img.alt = "gif";
-          mWrap.appendChild(img);
+        <div class="cmt-time">${relTime(d.created_utc)} · ${fmtDate(d.created_utc)}</div>`;
+      const urlMatch=(d.body||"").match(/https?:\/\/\S+\.(gif|gifv|mp4|webm)/i);
+      if(urlMatch){
+        const mUrl=urlMatch[0].replace(".gifv",".mp4");
+        const isV=/\.(mp4|webm)/i.test(mUrl);
+        const mWrap=document.createElement("div");mWrap.className="cmt-media";
+        if(isV){
+          const v=document.createElement("video");v.src=mUrl;v.autoplay=true;v.loop=true;
+          v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");mWrap.appendChild(v);
+        }else{
+          const img=document.createElement("img");img.src=mUrl;img.loading="lazy";img.alt="gif";mWrap.appendChild(img);
         }
         div.appendChild(mWrap);
       }
-      const cPrev = d.preview?.images?.[0];
-      const cMp4 = cPrev?.variants?.mp4?.source?.url?.replace(/&amp;/g, "&");
-      const cImg = cPrev?.source?.url?.replace(/&amp;/g, "&");
-      if (!urlMatch && (cMp4 || cImg)) {
-        const mWrap = document.createElement("div"); mWrap.className = "cmt-media";
-        if (cMp4) {
-          const v = document.createElement("video");
-          v.src = cMp4; v.autoplay = true; v.loop = true; v.muted = true;
-          v.playsInline = true; v.setAttribute("playsinline", "");
-          mWrap.appendChild(v);
-        } else {
-          const img = document.createElement("img"); img.src = cImg; img.loading = "lazy"; img.alt = "preview";
-          mWrap.appendChild(img);
+      const cPrev=d.preview?.images?.[0];
+      const cMp4=cPrev?.variants?.mp4?.source?.url?.replace(/&amp;/g,"&");
+      const cImg=cPrev?.source?.url?.replace(/&amp;/g,"&");
+      if(!urlMatch&&(cMp4||cImg)){
+        const mWrap=document.createElement("div");mWrap.className="cmt-media";
+        if(cMp4){
+          const v=document.createElement("video");v.src=cMp4;v.autoplay=true;v.loop=true;
+          v.muted=true;v.playsInline=true;v.setAttribute("playsinline","");mWrap.appendChild(v);
+        }else{
+          const img=document.createElement("img");img.src=cImg;img.loading="lazy";img.alt="preview";mWrap.appendChild(img);
         }
         div.appendChild(mWrap);
       }
       frag.appendChild(div);
     });
     $sheetBody.appendChild(frag);
-    if (cmts.length >= 50 || (totalCount && cmts.length < totalCount)) {
-      const note = document.createElement("p");
-      note.style.cssText = "text-align:center;color:var(--muted);font-size:11px;padding:6px 0";
-      note.textContent = `Showing ${cmts.length} of ${fmtN(totalCount || cmts.length)}`;
+    if(cmts.length>=50||(totalCount&&cmts.length<totalCount)){
+      const note=document.createElement("p");
+      note.style.cssText="text-align:center;color:var(--muted);font-size:11px;padding:6px 0";
+      note.textContent=`Showing ${cmts.length} of ${fmtN(totalCount||cmts.length)}`;
       $sheetBody.appendChild(note);
     }
-    requestAnimationFrame(() => { $sheetBody.scrollTop = 0; });
-  } catch (e) {
-    console.error("Comments:", e);
-    $sheetBody.innerHTML = `<div class="sheet-empty"><i class="fa-solid fa-triangle-exclamation"></i><span>Could not load comments</span></div>`;
+    requestAnimationFrame(()=>{$sheetBody.scrollTop=0;});
+  }catch(e){
+    console.error("Comments:",e);
+    $sheetBody.innerHTML=`<div class="sheet-empty"><i class="fa-solid fa-triangle-exclamation"></i><span>Could not load comments</span></div>`;
   }
 }
-function closeSheet() {
-  $sheetBody.querySelectorAll("video").forEach(v => { try { v.pause(); } catch {} });
-  $sheet.classList.remove("on"); $sheetBg.classList.remove("on");
-  setTimeout(() => { $sheetBody.innerHTML = ""; $sheetCount.textContent = ""; }, 350);
+function closeSheet(){
+  $sheetBody.querySelectorAll("video").forEach(v=>{try{v.pause();}catch{}});
+  $sheet.classList.remove("on");$sheetBg.classList.remove("on");
+  setTimeout(()=>{$sheetBody.innerHTML="";$sheetCount.textContent="";},350);
 }
-$sheetBg.addEventListener("click", closeSheet);
-$sheetX.addEventListener("click", closeSheet);
+$sheetBg.addEventListener("click",closeSheet);
+$sheetX.addEventListener("click",closeSheet);
 
 /* ── Chat ── */
-async function sendText() {
-  const txt = $chatIn.value.trim();
-  if (!txt) return;
-  $chatIn.value = "";
-  try { await push(chatRef, { type: "text", text: txt, username, createdAt: Date.now() }); }
-  catch { toast("Send failed", "err"); }
+async function sendText(){
+  const txt=$chatIn.value.trim();if(!txt)return;$chatIn.value="";
+  try{await push(chatRef,{type:"text",text:txt,username,createdAt:Date.now()});}
+  catch{toast("Send failed","err");}
 }
-$chatSend.addEventListener("click", sendText);
-$chatIn.addEventListener("keydown", e => { if (e.key === "Enter") sendText(); });
+$chatSend.addEventListener("click",sendText);
+$chatIn.addEventListener("keydown",e=>{if(e.key==="Enter")sendText();});
 
-function buildChatMemeCard(m) {
-  const card = document.createElement("div"); card.className = "msg-meme-card";
-  const label = m.mediaLabel || null;
-  const mediaUrl = m.mediaUrl || m.imageUrl || "";
-  const mediaType = m.mediaType || (mediaUrl.includes(".mp4") ? "video" : "img");
-  const info = document.createElement("div"); info.className = "msg-meme-info";
-  info.innerHTML = `
+function buildChatMemeCard(m){
+  const card=document.createElement("div");card.className="msg-meme-card";
+  const label=m.mediaLabel||null;
+  const mediaUrl=m.mediaUrl||m.imageUrl||"";
+  const mediaType=m.mediaType||(mediaUrl.includes(".mp4")?"video":"img");
+  const info=document.createElement("div");info.className="msg-meme-info";
+  /* Show post age in chat card */
+  const postAge=m.postCreatedAt?relTime(m.postCreatedAt):"";
+  info.innerHTML=`
     <div class="msg-meme-meta">
-      <span>r/${esc(m.sub || "")}</span><span class="dot">·</span>
-      <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score || 0)}</span><span class="dot">·</span>
-      <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt || 0)}</span>
-      ${label ? `<span class="dot">·</span><span style="color:var(--accent);font-weight:700;font-size:9px">${label}</span>` : ""}
+      <span>r/${esc(m.sub||"")}</span><span class="dot">·</span>
+      <span><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span><span class="dot">·</span>
+      <span><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
+      ${postAge?`<span class="dot">·</span><span style="font-size:10px;color:var(--muted)"><i class="fa-regular fa-clock" style="font-size:9px"></i> ${postAge}</span>`:""}
+      ${label?`<span class="dot">·</span><span style="color:var(--accent);font-weight:700;font-size:9px">${label}</span>`:""}
     </div>
-    <div class="msg-meme-title">${esc(m.title || "")}</div>`;
-  const mWrap = document.createElement("div"); mWrap.className = "msg-media-wrap";
-  if (mediaType === "video") {
-    const vid = buildVideoEl(mediaUrl, label === "GIF");
-    vid.style.cssText = "width:100%;height:100%;object-fit:contain;";
-    mWrap.appendChild(vid); vidVisIO.observe(vid);
-  } else {
-    const img = document.createElement("img");
-    img.src = mediaUrl; img.loading = "lazy"; img.decoding = "async";
-    img.style.cssText = "width:100%;height:100%;object-fit:contain;";
-    img.addEventListener("load", () => {
-      const r = img.naturalWidth / img.naturalHeight;
-      if (r > 1.4) mWrap.style.aspectRatio = "16/9";
-      else if (r < 0.8) mWrap.style.aspectRatio = "3/4";
-      else mWrap.style.aspectRatio = "1/1";
-    }, { once: true });
+    <div class="msg-meme-title">${esc(m.title||"")}</div>`;
+  const mWrap=document.createElement("div");mWrap.className="msg-media-wrap";
+  if(mediaType==="video"){
+    const vid=buildVideoEl(mediaUrl,label==="GIF");
+    vid.style.cssText="width:100%;height:100%;object-fit:contain;";
+    mWrap.appendChild(vid);vidVisIO.observe(vid);
+  }else{
+    const img=document.createElement("img");
+    img.src=mediaUrl;img.loading="lazy";img.decoding="async";
+    img.style.cssText="width:100%;height:100%;object-fit:contain;";
+    img.addEventListener("load",()=>{
+      const r=img.naturalWidth/img.naturalHeight;
+      if(r>1.4)mWrap.style.aspectRatio="16/9";
+      else if(r<0.8)mWrap.style.aspectRatio="3/4";
+      else mWrap.style.aspectRatio="1/1";
+    },{once:true});
     mWrap.appendChild(img);
   }
-  const footer = document.createElement("div"); footer.className = "msg-meme-footer";
-  footer.innerHTML = `
-    <span class="msg-meme-stat"><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score || 0)}</span>
-    <span class="msg-meme-stat"><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt || 0)}</span>
-    <span class="msg-meme-sub-badge">r/${esc(m.sub || "")}</span>`;
-  card.appendChild(info); card.appendChild(mWrap); card.appendChild(footer);
+  const footer=document.createElement("div");footer.className="msg-meme-footer";
+  footer.innerHTML=`
+    <span class="msg-meme-stat"><i class="fa-solid fa-arrow-up"></i> ${fmtN(m.score||0)}</span>
+    <span class="msg-meme-stat"><i class="fa-regular fa-comment"></i> ${fmtN(m.numCmt||0)}</span>
+    <span class="msg-meme-sub-badge">r/${esc(m.sub||"")}</span>`;
+  card.appendChild(info);card.appendChild(mWrap);card.appendChild(footer);
   return card;
 }
 
-onChildAdded(query(chatRef, limitToLast(150)), snap => {
-  const m = snap.val();
-  if (!m?.username) return;
-  $chatEmpty.style.display = "none";
-  const mine = m.username === username;
-  const atBottom = isAtBottom();
-  const wrap = document.createElement("div"); wrap.className = "msg " + (mine ? "out" : "in");
-  const who = document.createElement("div"); who.className = "msg-who"; who.textContent = m.username;
-  wrap.appendChild(who);
-  if (m.type === "meme") {
-    const outer = document.createElement("div"); outer.className = "msg-meme-outer";
-    outer.appendChild(buildChatMemeCard(m)); wrap.appendChild(outer);
-  } else {
-    const bw = document.createElement("div"); bw.className = "msg-bubble-wrap";
-    const bubble = document.createElement("div"); bubble.className = "msg-bubble"; bubble.textContent = m.text || "";
-    bw.appendChild(bubble); wrap.appendChild(bw);
+onChildAdded(query(chatRef,limitToLast(150)),snap=>{
+  const m=snap.val();if(!m?.username)return;
+  $chatEmpty.style.display="none";
+  const mine=m.username===username;
+  const atBottom=isAtBottom();
+  const wrap=document.createElement("div");wrap.className="msg "+(mine?"out":"in");
+  const who=document.createElement("div");who.className="msg-who";who.textContent=m.username;wrap.appendChild(who);
+  if(m.type==="meme"){
+    const outer=document.createElement("div");outer.className="msg-meme-outer";
+    outer.appendChild(buildChatMemeCard(m));wrap.appendChild(outer);
+  }else{
+    const bw=document.createElement("div");bw.className="msg-bubble-wrap";
+    const bubble=document.createElement("div");bubble.className="msg-bubble";bubble.textContent=m.text||"";
+    bw.appendChild(bubble);wrap.appendChild(bw);
   }
-  const ts = document.createElement("div"); ts.className = "msg-ts"; ts.textContent = fmtT(m.createdAt);
-  wrap.appendChild(ts);
+  const ts=document.createElement("div");ts.className="msg-ts";ts.textContent=fmtT(m.createdAt);wrap.appendChild(ts);
   $chatMsgs.appendChild(wrap);
-  if (atBottom || firstLoad) requestAnimationFrame(() => $chatMsgs.scrollTop = $chatMsgs.scrollHeight);
-  else if (!mine) { unreadCount++; if (!chatOpen) setNavBadge(unreadCount); showBanner(unreadCount); }
-  firstLoad = false;
+  if(atBottom||firstLoad)requestAnimationFrame(()=>$chatMsgs.scrollTop=$chatMsgs.scrollHeight);
+  else if(!mine){unreadCount++;if(!chatOpen)setNavBadge(unreadCount);showBanner(unreadCount);}
+  firstLoad=false;
 });
 
 /* ── Boot ── */
-function start() {
-  renderChips();
-  ensureFeedSentinel();
-  fetchFeedBatch();
-  initPresence();
-  // Init saved count
-  $savedCount.textContent = saved.size ? `${saved.size} meme${saved.size > 1 ? "s" : ""}` : "";
+function start(){
+  renderChips();ensureFeedSentinel();fetchFeedBatch();initPresence();
+  $savedCount.textContent=saved.size?`${saved.size} meme${saved.size>1?"s":""}`:"";
 }
 initUser();
 </script>
